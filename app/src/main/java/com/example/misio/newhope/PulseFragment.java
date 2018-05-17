@@ -95,29 +95,6 @@ public class PulseFragment extends Fragment implements BLEMiBand2Helper.BLEActio
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
-        requestHehe();
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-
-
-        }
-
-        Timer myTimer = new Timer();
-        myTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {getActivity().runOnUiThread(new Runnable() {
-                public void run() {
-                    UpdateGUI();
-                }
-            });}
-        }, 0, 15000);
-
-
-
     }
 
     @Override
@@ -142,6 +119,12 @@ public void onViewCreated(View view, Bundle savedInstanceState){
             connectToMiBand();
         }
     });
+
+    requestHehe();
+    if (getArguments() != null) {
+        mParam1 = getArguments().getString(ARG_PARAM1);
+        mParam2 = getArguments().getString(ARG_PARAM2);
+    }
 }
 
 

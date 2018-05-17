@@ -33,6 +33,9 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
@@ -41,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
     private Notifications mNotifications;
     Handler handler = new Handler(Looper.getMainLooper());
     BLEMiBand2Helper helper = null;
+    final PulseFragment pulseFragment = new PulseFragment();
 
     public BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -73,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
                     return true;
 
                 case R.id.bottom_menu_pulse:
-                    transaction.replace(R.id.content_main, new PulseFragment()).commit();
+                    transaction.replace(R.id.content_main,pulseFragment).commit();
 
                     colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorToPulse);
                     colorAnimation.setDuration(500);
@@ -139,9 +143,19 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.bottom_menu_pulse);
 
-        transaction.replace(R.id.content_main, new PulseFragment());
+        transaction.replace(R.id.content_main, pulseFragment);
         transaction.addToBackStack(null);
         transaction.commit();
+
+        Timer myTimer = new Timer();
+        myTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {runOnUiThread(new Runnable() {
+                public void run() {
+                    pulseFragment.UpdateGUI();
+                }
+            });}
+        }, 0, 10000);
 
     }
 

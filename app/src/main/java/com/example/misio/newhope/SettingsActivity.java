@@ -22,7 +22,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private boolean isAlertOn = false;
     private boolean isStepCountOn = false;
-    private int pulseFreqVal = 60;
+    private int pulseFreqVal =30;
 
     private EditText pulseFreqText;
     private Switch alerts;
