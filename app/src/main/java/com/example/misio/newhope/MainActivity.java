@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
                     pulseFragment.UpdateGUI();
                 }
             });}
-        }, 0, 10000);
+        }, 0, 5000);
 
     }
 

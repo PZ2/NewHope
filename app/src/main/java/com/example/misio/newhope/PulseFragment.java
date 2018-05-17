@@ -117,7 +117,8 @@ public void onViewCreated(View view, Bundle savedInstanceState){
     fap.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            mainActivity.mTimeService.odczytPulsu();
+            //mainActivity.mTimeService.odczytPulsu();
+            mainActivity.mTimeService.odczytBaterii();
         }
     });
 

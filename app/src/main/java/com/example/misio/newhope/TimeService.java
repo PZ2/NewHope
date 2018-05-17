@@ -259,7 +259,7 @@ import io.realm.RealmResults;
             }
         }
 
-        public int test(){
-            return 8;
+        public void odczytBaterii(){
+            helper.readData(Consts.UUID_SERVICE_MIBAND_SERVICE, Consts.UUID_CHARACTERISTIC_6_BATTERY_INFO);
         }
     }
