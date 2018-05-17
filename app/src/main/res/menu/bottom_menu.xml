@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/bottom_menu_battery"
+        android:title="Battery"
+        android:icon="@drawable/ic_battery_full_black_24dp"/>
+    <item
+        android:id="@+id/bottom_menu_pulse"
+        android:title="Pulse"
+        android:icon="@drawable/ic_pulse_black_24dp"/>
+    <item
+        android:id="@+id/bottom_menu_steps"
+        android:title="Steps"
+        android:icon="@drawable/ic_steps_walk_black_24dp"/>
+</menu>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#f44336</color>
+    <color name="colorPrimaryDark">#ba000d</color>
+    <color name="colorAccent">#18ffff</color>
+
+    <color name="colorPulse">#f44336</color>
+    <color name="colorPulseLight">#ff7961</color>
+
+
+    <color name="colorSteps">#ffc107</color>
+    <color name="colorStepsLight">#fff350</color>
+
+
+    <color name="colorBattery">#4caf50</color>
+    <color name="colorBatteryLight">#80e27e</color>
+
+
+</resources>

@@ -1,0 +1,23 @@
+<!--  created by: the best designer this world has seen   -->
+<resources>
+    <string name="app_name">HealthBand</string>
+
+
+    <!--  aaa pliczki   -->
+    <string name="settings">Settings</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!--  USTAWIENIA SETTINGS  -->
+    <string name="settings_alerts">Alerts</string>
+    <string name="settings_frequency_title">Frequency of measurement</string>
+    <string name="settings_frequency_secondary"> times a minute</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="title_activity_tabbed">TabbedActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+</resources>
