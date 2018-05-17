@@ -4,11 +4,14 @@ import android.Manifest;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.bluetooth.BluetoothAdapter;
+import android.content.ComponentName;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -27,6 +30,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
@@ -45,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
     Handler handler = new Handler(Looper.getMainLooper());
     BLEMiBand2Helper helper = null;
     final PulseFragment pulseFragment = new PulseFragment();
+    boolean mBounded;
+    TimeService mTimeService;
 
     public BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -118,6 +124,8 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        pulseFragment.mainActivity = this;
+
         mNotifications = new Notifications(this);
 
         if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -126,8 +134,12 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
             // Write you code here if permission already given.
         }
 
+        Intent mIntent = new Intent(this, TimeService.class);
+        bindService(mIntent, mConnection, BIND_AUTO_CREATE);
 
-        startService(new Intent(this, TimeService.class));
+        //int osiem = mTimeService.test();
+
+        //startService(new Intent(this, TimeService.class));
 
 
         Toolbar appToolbar = (Toolbar) findViewById(R.id.app_toolbar);
@@ -199,6 +211,33 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
         }
 
     }
+
+    ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Toast.makeText(MainActivity.this, "Service is disconnected", 1000).show();
+            mBounded = false;
+            mTimeService = null;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Toast.makeText(MainActivity.this, "Service is connected", 1000).show();
+            mBounded = true;
+            TimeService.LocalBinder mLocalBinder = (TimeService.LocalBinder)service;
+            mTimeService = mLocalBinder.getServerInstance();
+        }
+    };
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(mBounded) {
+            unbindService(mConnection);
+            mBounded = false;
+        }
+    }
+
 
 
 }

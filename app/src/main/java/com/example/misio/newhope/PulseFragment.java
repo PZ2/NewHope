@@ -55,6 +55,7 @@ public class PulseFragment extends Fragment implements BLEMiBand2Helper.BLEActio
     int heartRate = 60;
     private FloatingActionButton fap;
     TextView pulseTextView;
+    public MainActivity mainActivity;
 
     public RealmResults<RealmPulseReading> pulses;
     public List<RealmPulseReading> pulsesToAdd = new ArrayList<>();
@@ -116,7 +117,7 @@ public void onViewCreated(View view, Bundle savedInstanceState){
     fap.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            connectToMiBand();
+            mainActivity.mTimeService.odczytPulsu();
         }
     });
 

@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
+import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -51,11 +52,6 @@ import io.realm.RealmResults;
 
         Handler handler = new Handler(Looper.getMainLooper());
         BLEMiBand2Helper helper = null;
-
-        @Override
-        public IBinder onBind(Intent intent) {
-            return null;
-        }
 
         @Override
         public void onCreate() {
@@ -248,5 +244,22 @@ import io.realm.RealmResults;
             if (mBluetoothAdapter == null) {
                 // Device doesn't support Bluetooth
             }
+        }
+
+        IBinder mBinder = new LocalBinder();
+
+        @Override
+        public IBinder onBind(Intent intent) {
+            return mBinder;
+        }
+
+        public class LocalBinder extends Binder {
+            public TimeService getServerInstance() {
+                return TimeService.this;
+            }
+        }
+
+        public int test(){
+            return 8;
         }
     }
