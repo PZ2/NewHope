@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 
 /**
@@ -19,6 +20,11 @@ import android.widget.ProgressBar;
  * create an instance of this fragment.
  */
 public class StepsFragment extends Fragment {
+
+    public MainActivity mainActivity;
+    public TextView stepsRate;
+    public int step;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -74,6 +80,13 @@ public class StepsFragment extends Fragment {
 
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState){
+        stepsRate = (TextView) getView().findViewById(R.id.stepsRate);
+        if (stepsRate != null) stepsRate.setText(String.valueOf(step));
+    }
+
+
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -111,5 +124,9 @@ public class StepsFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    void UpdateGUI(int steps){
+        if (stepsRate != null) stepsRate.setText(String.valueOf(steps));
     }
 }

@@ -1,7 +1,6 @@
 package com.example.misio.newhope;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -77,7 +76,6 @@ public class BatteryFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState){
         batteryRate = (TextView) getView().findViewById(R.id.batteryRate);
         if (batteryRate != null) batteryRate.setText(String.valueOf(batt));
-
     }
 
     // TODO: Rename method, update argument and hook method into UI event

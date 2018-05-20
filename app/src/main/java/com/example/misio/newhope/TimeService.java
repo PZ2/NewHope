@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -38,6 +39,7 @@ import io.realm.RealmResults;
         private final String APP = "com.example.het3crab.healthband";
         private final String PULSE_FREQ_KEY = "com.example.het3crab.healthband.pulsefreq";
         private final String BATTERY = "com.example.het3crab.healthband.battery";
+        private final String STEPS = "com.example.het3crab.healthband.steps";
         int pulseFreq;
         int average;
         boolean connect=false;
@@ -115,9 +117,21 @@ import io.realm.RealmResults;
 
         @Override
         public void onRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-            Log.d("odczyt baterii", " - odczyt baterii: " + characteristic.getValue()[1]);
-            SharedPreferences pref = this.getSharedPreferences(APP , Context.MODE_PRIVATE);
-            pref.edit().putInt(BATTERY, characteristic.getValue()[1]).apply();
+
+            if (characteristic.getUuid().toString().equals(Consts.UUID_CHARACTERISTIC_6_BATTERY_INFO.toString())){
+                Log.d("odczyt baterii", " - odczyt baterii: " + characteristic.getValue()[1]);
+                SharedPreferences pref = this.getSharedPreferences(APP , Context.MODE_PRIVATE);
+                pref.edit().putInt(BATTERY, characteristic.getValue()[1]).apply();
+            }
+            else if (characteristic.getUuid().toString().equals(Consts.UUID_CHARACTERISTIC_7_REALTIME_STEPS.toString())){
+                byte[] arr = {characteristic.getValue()[1] , characteristic.getValue()[2]};
+                ByteBuffer wrapped = ByteBuffer.wrap(arr);
+                short kroki = wrapped.getShort();
+
+                Log.d("odczyt kroków", " - odczyt kroków: " + kroki);
+                SharedPreferences pref = this.getSharedPreferences(APP , Context.MODE_PRIVATE);
+                pref.edit().putInt(STEPS, kroki).apply();
+            }
         }
 
         @Override
@@ -173,10 +187,10 @@ import io.realm.RealmResults;
                 @Override
                 public void execute(Realm realm) {
                     pulses2 = realm.where(RealmPulseReading.class).findAll();
-                    if (pulses2.size() > 2) {
-                        average = (pulses2.get(pulses2.size() - 1).getValue() + pulses2.get(pulses2.size() - 2).getValue() + pulses2.get(pulses2.size() - 3).getValue()) / 3;
-                        Log.d("siema", String.valueOf(average));
-                        if (average > 150 || average < 60) {
+                    if (pulses2.size() > 3) {
+                        average = (pulses2.get(pulses2.size() - 1).getValue() + pulses2.get(pulses2.size() - 2).getValue() + pulses2.get(pulses2.size() - 3).getValue() + pulses2.get(pulses2.size() - 4).getValue()) / 4;
+                        Log.d("średnia", String.valueOf(average));
+                        if (average > 180 || average < 35) {
                             Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                             // Vibrate for 500 milliseconds
                             v.vibrate(500);
@@ -206,7 +220,7 @@ import io.realm.RealmResults;
 
                             helper.getNotificationsWithDescriptor(Consts.UUID_SERVICE_HEARTBEAT, Consts.UUID_NOTIFICATION_HEARTRATE, Consts.UUID_DESCRIPTOR_UPDATE_NOTIFICATION);
                             try {
-                                Thread.sleep(1017);
+                                Thread.sleep(1050);
                             } catch (InterruptedException e) {
                                 // TODO Auto-generated catch block
                                 e.printStackTrace();
@@ -270,5 +284,9 @@ import io.realm.RealmResults;
 
         public void odczytBaterii(){
             helper.readData(Consts.UUID_SERVICE_MIBAND_SERVICE, Consts.UUID_CHARACTERISTIC_6_BATTERY_INFO);
+        }
+
+        public void odczytKrokow(){
+            helper.readData(Consts.UUID_SERVICE_MIBAND_SERVICE, Consts.UUID_CHARACTERISTIC_7_REALTIME_STEPS);
         }
     }

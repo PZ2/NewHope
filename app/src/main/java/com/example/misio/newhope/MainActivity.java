@@ -49,15 +49,18 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
 
     private final String APP = "com.example.het3crab.healthband";
     private final String BATTERY = "com.example.het3crab.healthband.battery";
+    private final String STEPS = "com.example.het3crab.healthband.steps";
     private Notifications mNotifications;
 
     private int REQUEST_ENABLE_BT = 1;
 
     final PulseFragment pulseFragment = new PulseFragment();
     final BatteryFragment batteryFragment = new BatteryFragment();
+    final StepsFragment stepsFragment = new StepsFragment();
     boolean mBounded;
     TimeService mTimeService;
     int battery;
+    int steps;
 
     public BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -109,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
                     return true;
 
                 case R.id.bottom_menu_steps:
-                    transaction.replace(R.id.content_main, new StepsFragment()).commit();
+                    transaction.replace(R.id.content_main, stepsFragment).commit();
 
                     colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorToSteps);
                     colorAnimation.setDuration(500);
@@ -121,6 +124,9 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
                         }
                     });
                     colorAnimation.start();
+
+                    stepsFragment.step = steps;
+                    mTimeService.odczytKrokow();
 
                     return true;
             }
@@ -136,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
 
         pulseFragment.mainActivity = this;
         batteryFragment.mainActivity = this;
+        stepsFragment.mainActivity = this;
 
         mNotifications = new Notifications(this);
 
@@ -189,8 +196,10 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
                 public void run() {
                     SharedPreferences pref = getSharedPreferences(APP , Context.MODE_PRIVATE);
                     battery = pref.getInt(BATTERY, 100);
+                    steps = pref.getInt(STEPS, 1000);
                     pulseFragment.UpdateGUI();
                     batteryFragment.UpdateGUI(battery);
+                    stepsFragment.UpdateGUI(steps);
                 }
             });}
         }, 0, 5000);
