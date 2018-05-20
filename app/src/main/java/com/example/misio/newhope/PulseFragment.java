@@ -191,8 +191,6 @@ public class PulseFragment extends Fragment{
 
         setHeartRate(heartRate);
 
-
-
         realm.close();
     }
 
