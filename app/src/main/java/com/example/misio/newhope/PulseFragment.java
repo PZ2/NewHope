@@ -41,28 +41,19 @@ import io.realm.RealmResults;
  * Use the {@link PulseFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PulseFragment extends Fragment implements BLEMiBand2Helper.BLEAction{
+public class PulseFragment extends Fragment{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    Handler handler = new Handler(Looper.getMainLooper());
-    BLEMiBand2Helper helper = null;
-
-    boolean connect=false;
     private TextView heartRateView;
     int heartRate = 60;
     private FloatingActionButton fap;
-    TextView pulseTextView;
     public MainActivity mainActivity;
 
     public RealmResults<RealmPulseReading> pulses;
     public List<RealmPulseReading> pulsesToAdd = new ArrayList<>();
-
-
-
-
 
 
     // TODO: Rename and change types of parameters
@@ -106,13 +97,14 @@ public class PulseFragment extends Fragment implements BLEMiBand2Helper.BLEActio
 
 
     }
-@Override
-public void onViewCreated(View view, Bundle savedInstanceState){
-    heartRateView = (TextView) getView().findViewById(R.id.heartRate);
 
-    setHeartRate(heartRate);
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState){
+        heartRateView = (TextView) getView().findViewById(R.id.heartRate);
 
-    fap = getView().findViewById(R.id.fap);
+        setHeartRate(heartRate);
+
+        fap = getView().findViewById(R.id.fap);
 
     fap.setOnClickListener(new View.OnClickListener() {
         @Override
@@ -121,12 +113,11 @@ public void onViewCreated(View view, Bundle savedInstanceState){
         }
     });
 
-    requestHehe();
-    if (getArguments() != null) {
-        mParam1 = getArguments().getString(ARG_PARAM1);
-        mParam2 = getArguments().getString(ARG_PARAM2);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
     }
-}
 
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -166,86 +157,6 @@ public void onViewCreated(View view, Bundle savedInstanceState){
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-    }
-
-    void connectToMiBand() {
-        if (helper == null) {
-            helper = new BLEMiBand2Helper(getContext(), handler);
-            helper.addListener(this);
-        }
-
-
-        // Setup Bluetooth:
-        helper.connect();
-
-    }
-
-    public void odczytPulsu(){
-        helper.writeData(Consts.UUID_SERVICE_HEARTBEAT, Consts.UUID_START_HEARTRATE_CONTROL_POINT, new byte[]{21, 2, 1} );
-    }
-
-    void requestHehe(){
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (mBluetoothAdapter == null) {
-            // Device doesn't support Bluetooth
-        }
-    }
-
-    @Override
-    public void onDisconnect() {
-        connect = false;
-
-    }
-
-    @Override
-    public void onConnect() {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        helper.getNotificationsWithDescriptor(Consts.UUID_SERVICE_HEARTBEAT, Consts.UUID_NOTIFICATION_HEARTRATE, Consts.UUID_DESCRIPTOR_UPDATE_NOTIFICATION);
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        odczytPulsu();
-    }
-
-    @Override
-    public void onRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-
-    }
-
-    @Override
-    public void onWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-
-    }
-
-    @Override
-    public void onNotification(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-        UUID alertUUID = characteristic.getUuid();
-        Log.d("odczyt", " - odczyt: " + Arrays.toString(characteristic.getValue()));
-
-        final RealmPulseReading pulse = new RealmPulseReading();
-        Calendar calendar = Calendar.getInstance();
-        java.util.Date now = calendar.getTime();
-        long x = now.getTime();
-        pulse.setDate(x);
-        pulse.setValue((int)(characteristic.getValue()[1]));
-        pulseTextView.setText(characteristic.getValue()[1]);
-
-        Realm.init(getContext());
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
-        Realm realm = Realm.getInstance(realmConfiguration);
-
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                realm.insertOrUpdate(pulse);
-            }
-        });
     }
 
     public void setHeartRate(int heartRate) {

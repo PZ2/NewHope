@@ -15,18 +15,20 @@ import android.widget.Switch;
 import android.widget.ToggleButton;
 
 public class SettingsActivity extends AppCompatActivity {
-    private final String APP = "com.example.het3crab.healthband";
-    private final String ALERTS_KEY = "com.example.het3crab.healthband.alerts";
-    private final String PULSE_FREQ_KEY = "com.example.het3crab.healthband.pulsefreq";
-    private final String STEP_KEY = "com.example.het3crab.healthband.stepcount";
 
     private boolean isAlertOn = false;
-    private boolean isStepCountOn = false;
-    private int pulseFreqVal =30;
+    private boolean isNotificationsOn = false;
+    private int pulseFreqVal = 30;
+    private String phoneNumber = "";
+    private String miBandAddress = "D9:E3:90:3D:6F:93";
 
     private EditText pulseFreqText;
     private Switch alerts;
-    private ToggleButton steps;
+    private Switch notifications;
+    private EditText number;
+    private EditText miBand;
+
+    private Settings settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,14 +37,19 @@ public class SettingsActivity extends AppCompatActivity {
 
         pulseFreqText = findViewById(R.id.pulseFreq);
         alerts = (Switch) findViewById(R.id.alerts);
+        notifications = findViewById(R.id.notifications);
+        number = findViewById(R.id.number);
+        miBand = findViewById(R.id.miBand);
 
-
-
-        readSettings();
+        settings = new Settings(this);
+        settings.readSettings();
 
         //update settings view
-        pulseFreqText.setText(String.valueOf(pulseFreqVal));
-        alerts.setChecked(isAlertOn);
+        pulseFreqText.setText(String.valueOf(settings.getPulseFreqVal()));
+        alerts.setChecked(settings.getIsAlertOn());
+        notifications.setChecked(settings.getIsNotificationsOn());
+        number.setText(settings.getPhoneNumber());
+        miBand.setText(settings.getMiBandAddress());
         // steps.setChecked(isStepCountOn);
 
         Toolbar appSettingsToolbar =
@@ -54,24 +61,20 @@ public class SettingsActivity extends AppCompatActivity {
         ab.setDisplayHomeAsUpEnabled(true);
     }
 
-    public void readSettings(){
-        SharedPreferences prefs = this.getSharedPreferences(
-                APP , Context.MODE_PRIVATE);
-
-        isAlertOn = prefs.getBoolean(ALERTS_KEY, false);
-        pulseFreqVal = prefs.getInt(PULSE_FREQ_KEY, 60);
-        isStepCountOn = prefs.getBoolean(STEP_KEY, false);
-    }
-
     private void saveSettings() {
         pulseFreqVal = Integer.parseInt(pulseFreqText.getText().toString());
         isAlertOn = alerts.isChecked();
+        isNotificationsOn = notifications.isChecked();
+        phoneNumber = number.getText().toString();
+        miBandAddress = miBand.getText().toString();
 
         SharedPreferences prefs = this.getSharedPreferences(APP , Context.MODE_PRIVATE);
 
-        prefs.edit().putBoolean(ALERTS_KEY, isAlertOn).apply();
-        prefs.edit().putInt(PULSE_FREQ_KEY, pulseFreqVal).apply();
-        prefs.edit().putBoolean(STEP_KEY, isStepCountOn).apply();
+        prefs.edit().putBoolean(Settings.ALERTS_KEY, isAlertOn).apply();
+        prefs.edit().putInt(Settings.PULSE_FREQ_KEY, pulseFreqVal).apply();
+        prefs.edit().putBoolean(Settings.NOTIFICATIONS_KEY, isNotificationsOn).apply();
+        prefs.edit().putString(Settings.NUMBER_KEY, phoneNumber).apply();
+        prefs.edit().putString(Settings.ADDRESS_KEY, miBandAddress).apply();
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -94,18 +97,6 @@ public class SettingsActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-    public int getPulseFreqVal(){
-        return pulseFreqVal;
-    }
-
-    public boolean getIsAlertOn(){
-        return isAlertOn;
-    }
-
-    public boolean getIsStepCountOn(){
-        return isStepCountOn;
-    }
-
 
     @Override
     protected void onPause() {
