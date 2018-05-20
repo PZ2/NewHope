@@ -45,7 +45,7 @@ import io.realm.RealmResults;
         boolean connect=false;
         private SmsManager smsManager = SmsManager.getDefault();
 
-
+        private Settings settings;
 
         public RealmResults<RealmPulseReading> pulses2;
         public List<RealmPulseReading> pulses2ToAdd = new ArrayList<>();
@@ -60,6 +60,8 @@ import io.realm.RealmResults;
 
         @Override
         public void onCreate() {
+            settings = new Settings(this);
+
             connectToMiBand();
 
             Intent notificationIntent = new Intent(this, MainActivity.class);
@@ -89,16 +91,16 @@ import io.realm.RealmResults;
         }
 
         public void pulseFreqUpdate(){
-            SharedPreferences prefs = this.getSharedPreferences(APP , Context.MODE_PRIVATE);
-            pulseFreq = prefs.getInt(PULSE_FREQ_KEY, 60);
+            settings.readSettings();
+            pulseFreq = settings.getPulseFreqVal();
         }
 
         public void ifFreqChange(){
-            SharedPreferences prefs = this.getSharedPreferences(APP , Context.MODE_PRIVATE);
-            if (prefs.getInt(PULSE_FREQ_KEY, 60) != pulseFreq) {
+            settings.readSettings();
+            if (settings.getPulseFreqVal() != pulseFreq) {
                 mTimer.cancel();
                 mTimer = new Timer();
-                pulseFreq = prefs.getInt(PULSE_FREQ_KEY, 60);
+                pulseFreq = settings.getPulseFreqVal();
                 mTimer.scheduleAtFixedRate(new TimeDisplayTimerTask(), 0, pulseFreq * 1000);
             }
 

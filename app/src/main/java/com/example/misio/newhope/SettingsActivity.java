@@ -68,7 +68,7 @@ public class SettingsActivity extends AppCompatActivity {
         phoneNumber = number.getText().toString();
         miBandAddress = miBand.getText().toString();
 
-        SharedPreferences prefs = this.getSharedPreferences(Settings.APP , Context.MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences(Settings.APP , Context.MODE_PRIVATE);
 
         prefs.edit().putBoolean(Settings.ALERTS_KEY, isAlertOn).apply();
         prefs.edit().putInt(Settings.PULSE_FREQ_KEY, pulseFreqVal).apply();
