@@ -5,7 +5,9 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.TransitionDrawable;
@@ -45,12 +47,16 @@ import io.realm.RealmConfiguration;
 
 public class MainActivity extends AppCompatActivity implements PulseFragment.OnFragmentInteractionListener, BatteryFragment.OnFragmentInteractionListener, StepsFragment.OnFragmentInteractionListener {
 
+    private final String APP = "com.example.het3crab.healthband";
+    private final String BATTERY = "com.example.het3crab.healthband.battery";
     private Notifications mNotifications;
     Handler handler = new Handler(Looper.getMainLooper());
     BLEMiBand2Helper helper = null;
     final PulseFragment pulseFragment = new PulseFragment();
+    final BatteryFragment batteryFragment = new BatteryFragment();
     boolean mBounded;
     TimeService mTimeService;
+    int battery;
 
     public BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -67,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
 
             switch (item.getItemId()) {
                 case  R.id.bottom_menu_battery:
-                    transaction.replace(R.id.content_main, new BatteryFragment()).commit();
+                    transaction.replace(R.id.content_main, batteryFragment).commit();
 
                     colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorToBattery);
                     colorAnimation.setDuration(500);
@@ -79,6 +85,9 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
                         }
                     });
                     colorAnimation.start();
+
+                    batteryFragment.batt = battery;
+                    mTimeService.odczytBaterii();
 
                     return true;
 
@@ -125,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
         setContentView(R.layout.activity_main);
 
         pulseFragment.mainActivity = this;
+        batteryFragment.mainActivity = this;
 
         mNotifications = new Notifications(this);
 
@@ -135,12 +145,8 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
         }
 
         Intent mIntent = new Intent(this, TimeService.class);
+        startService(new Intent(this, TimeService.class));
         bindService(mIntent, mConnection, BIND_AUTO_CREATE);
-
-        //int osiem = mTimeService.test();
-
-        //startService(new Intent(this, TimeService.class));
-
 
         Toolbar appToolbar = (Toolbar) findViewById(R.id.app_toolbar);
         setSupportActionBar(appToolbar);
@@ -164,7 +170,10 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
             @Override
             public void run() {runOnUiThread(new Runnable() {
                 public void run() {
+                    SharedPreferences pref = getSharedPreferences(APP , Context.MODE_PRIVATE);
+                    battery = pref.getInt(BATTERY, 100);
                     pulseFragment.UpdateGUI();
+                    batteryFragment.UpdateGUI(battery);
                 }
             });}
         }, 0, 5000);

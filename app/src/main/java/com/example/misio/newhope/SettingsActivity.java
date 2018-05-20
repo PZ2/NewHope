@@ -67,8 +67,7 @@ public class SettingsActivity extends AppCompatActivity {
         pulseFreqVal = Integer.parseInt(pulseFreqText.getText().toString());
         isAlertOn = alerts.isChecked();
 
-        SharedPreferences prefs = this.getSharedPreferences(
-                APP , Context.MODE_PRIVATE);
+        SharedPreferences prefs = this.getSharedPreferences(APP , Context.MODE_PRIVATE);
 
         prefs.edit().putBoolean(ALERTS_KEY, isAlertOn).apply();
         prefs.edit().putInt(PULSE_FREQ_KEY, pulseFreqVal).apply();
