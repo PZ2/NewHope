@@ -35,6 +35,8 @@ import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 
     public class TimeService extends Service implements BLEMiBand2Helper.BLEAction {
+        private final String APP = "com.example.het3crab.healthband";
+        private final String BATTERY = "com.example.het3crab.healthband.battery";
         int pulseFreq;
         int average;
         boolean connect=false;
@@ -114,7 +116,9 @@ import io.realm.RealmResults;
 
         @Override
         public void onRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-
+            Log.d("odczyt baterii", " - odczyt baterii: " + characteristic.getValue()[1]);
+            SharedPreferences pref = this.getSharedPreferences(APP , Context.MODE_PRIVATE);
+            pref.edit().putInt(BATTERY, characteristic.getValue()[1]).apply();
         }
 
         @Override
@@ -125,7 +129,7 @@ import io.realm.RealmResults;
         @Override
         public void onNotification(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             UUID alertUUID = characteristic.getUuid();
-            Log.d("odczyt", " - odczyt: " + Arrays.toString(characteristic.getValue()));
+            Log.d("odczyt pulsu", " - odczyt pulsu: " + Arrays.toString(characteristic.getValue()));
 
             final RealmPulseReading pulse = new RealmPulseReading();
             Calendar calendar = Calendar.getInstance();
@@ -203,7 +207,7 @@ import io.realm.RealmResults;
 
                             helper.getNotificationsWithDescriptor(Consts.UUID_SERVICE_HEARTBEAT, Consts.UUID_NOTIFICATION_HEARTRATE, Consts.UUID_DESCRIPTOR_UPDATE_NOTIFICATION);
                             try {
-                                Thread.sleep(1000);
+                                Thread.sleep(1017);
                             } catch (InterruptedException e) {
                                 // TODO Auto-generated catch block
                                 e.printStackTrace();

@@ -106,13 +106,12 @@ public class PulseFragment extends Fragment{
 
         fap = getView().findViewById(R.id.fap);
 
-        fap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //mainActivity.mTimeService.odczytPulsu();
-                mainActivity.mTimeService.odczytBaterii();
-            }
-        });
+    fap.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            mainActivity.mTimeService.odczytPulsu();
+        }
+    });
 
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);

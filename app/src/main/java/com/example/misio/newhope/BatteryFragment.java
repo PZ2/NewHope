@@ -1,13 +1,14 @@
 package com.example.misio.newhope;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,6 +19,11 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class BatteryFragment extends Fragment {
+
+    public MainActivity mainActivity;
+    public TextView batteryRate;
+    public int batt;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -67,6 +73,13 @@ public class BatteryFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_battery, container, false);
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState){
+        batteryRate = (TextView) getView().findViewById(R.id.batteryRate);
+        if (batteryRate != null) batteryRate.setText(String.valueOf(batt));
+
+    }
+
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -104,5 +117,9 @@ public class BatteryFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    void UpdateGUI(int battery){
+        if (batteryRate != null) batteryRate.setText(String.valueOf(battery));
     }
 }
