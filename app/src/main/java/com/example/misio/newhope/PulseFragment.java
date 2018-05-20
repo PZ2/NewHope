@@ -56,10 +56,6 @@ public class PulseFragment extends Fragment{
     public List<RealmPulseReading> pulsesToAdd = new ArrayList<>();
 
 
-
-
-
-
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -101,27 +97,28 @@ public class PulseFragment extends Fragment{
 
 
     }
-@Override
-public void onViewCreated(View view, Bundle savedInstanceState){
-    heartRateView = (TextView) getView().findViewById(R.id.heartRate);
 
-    setHeartRate(heartRate);
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState){
+        heartRateView = (TextView) getView().findViewById(R.id.heartRate);
 
-    fap = getView().findViewById(R.id.fap);
+        setHeartRate(heartRate);
 
-    fap.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            //mainActivity.mTimeService.odczytPulsu();
-            mainActivity.mTimeService.odczytBaterii();
+        fap = getView().findViewById(R.id.fap);
+
+        fap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //mainActivity.mTimeService.odczytPulsu();
+                mainActivity.mTimeService.odczytBaterii();
+            }
+        });
+
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
         }
-    });
-
-    if (getArguments() != null) {
-        mParam1 = getArguments().getString(ARG_PARAM1);
-        mParam2 = getArguments().getString(ARG_PARAM2);
     }
-}
 
 
     // TODO: Rename method, update argument and hook method into UI event
