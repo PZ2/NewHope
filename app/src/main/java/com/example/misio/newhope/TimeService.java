@@ -15,6 +15,7 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.telephony.SmsManager;
 import android.util.Log;
@@ -147,7 +148,7 @@ import io.realm.RealmResults;
 
         public void sendSms()
         {
-            smsManager.sendTextMessage("694759594", null, "elo", null, null);
+            smsManager.sendTextMessage(new Settings(this).getPhoneNumber(), null, "elo", null, null);
         }
 
         void lifeCheck() {
@@ -172,6 +173,10 @@ import io.realm.RealmResults;
                         average = (pulses2.get(pulses2.size() - 1).getValue() + pulses2.get(pulses2.size() - 2).getValue() + pulses2.get(pulses2.size() - 3).getValue()) / 3;
                         Log.d("siema", String.valueOf(average));
                         if (average > 150 || average < 60) {
+                            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                            // Vibrate for 500 milliseconds
+                            v.vibrate(500);
+
                             sendSms();
                         }
 
