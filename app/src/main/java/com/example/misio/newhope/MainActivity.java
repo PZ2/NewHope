@@ -46,8 +46,9 @@ import io.realm.RealmConfiguration;
 public class MainActivity extends AppCompatActivity implements PulseFragment.OnFragmentInteractionListener, BatteryFragment.OnFragmentInteractionListener, StepsFragment.OnFragmentInteractionListener {
 
     private Notifications mNotifications;
-    Handler handler = new Handler(Looper.getMainLooper());
-    BLEMiBand2Helper helper = null;
+
+    private int REQUEST_ENABLE_BT = 1;
+
     final PulseFragment pulseFragment = new PulseFragment();
     boolean mBounded;
     TimeService mTimeService;
@@ -130,9 +131,25 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
 
         if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        }else{
-            // Write you code here if permission already given.
         }
+
+        if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.SEND_SMS}, 1);
+        }
+
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if(mBluetoothAdapter == null){
+            //if bluetooth is not supported exit
+            android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(1);
+        }
+        if(!mBluetoothAdapter.isEnabled())
+        {
+            //if bluetooth is off ask for enable
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
+
 
         Intent mIntent = new Intent(this, TimeService.class);
         bindService(mIntent, mConnection, BIND_AUTO_CREATE);
@@ -215,14 +232,14 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
     ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            Toast.makeText(MainActivity.this, "Service is disconnected", 1000).show();
+            Toast.makeText(MainActivity.this, "Service is disconnected", Toast.LENGTH_LONG).show();
             mBounded = false;
             mTimeService = null;
         }
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            Toast.makeText(MainActivity.this, "Service is connected", 1000).show();
+            Toast.makeText(MainActivity.this, "Service is connected", Toast.LENGTH_LONG).show();
             mBounded = true;
             TimeService.LocalBinder mLocalBinder = (TimeService.LocalBinder)service;
             mTimeService = mLocalBinder.getServerInstance();
