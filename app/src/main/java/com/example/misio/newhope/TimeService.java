@@ -35,7 +35,6 @@ import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 
     public class TimeService extends Service implements BLEMiBand2Helper.BLEAction {
-        private final String APP = "com.example.het3crab.healthband";
         private final String BATTERY = "com.example.het3crab.healthband.battery";
         int pulseFreq;
         int average;
@@ -117,7 +116,7 @@ import io.realm.RealmResults;
         @Override
         public void onRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             Log.d("odczyt baterii", " - odczyt baterii: " + characteristic.getValue()[1]);
-            SharedPreferences pref = this.getSharedPreferences(APP , Context.MODE_PRIVATE);
+            SharedPreferences pref = this.getSharedPreferences(Settings.APP , Context.MODE_PRIVATE);
             pref.edit().putInt(BATTERY, characteristic.getValue()[1]).apply();
         }
 
