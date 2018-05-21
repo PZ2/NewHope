@@ -70,7 +70,7 @@ public class BLEMiBand2Helper {
         try {
 
             //"D9:E3:90:3D:6F:93"
-            activeDevice = mBluetoothAdapter.getRemoteDevice(new Settings(myContext).getMiBandAddress());
+            activeDevice = mBluetoothAdapter.getRemoteDevice(Settings.readString(Settings.ADDRESS_KEY, myContext));
         } catch (Exception e) {
             activeDevice = null;
             e.printStackTrace();

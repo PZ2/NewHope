@@ -21,7 +21,7 @@ public class BatteryFragment extends Fragment {
 
     public MainActivity mainActivity;
     public TextView batteryRate;
-    public int batt;
+    public int batt = 60;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

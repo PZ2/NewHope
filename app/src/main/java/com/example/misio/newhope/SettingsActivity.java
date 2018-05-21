@@ -1,18 +1,13 @@
 package com.example.misio.newhope;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
-import android.widget.ToggleButton;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -28,8 +23,6 @@ public class SettingsActivity extends AppCompatActivity {
     private EditText number;
     private EditText miBand;
 
-    private Settings settings;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,15 +34,12 @@ public class SettingsActivity extends AppCompatActivity {
         number = findViewById(R.id.number);
         miBand = findViewById(R.id.miBand);
 
-        settings = new Settings(this);
-        settings.readSettings();
-
         //update settings view
-        pulseFreqText.setText(String.valueOf(settings.getPulseFreqVal()));
-        alerts.setChecked(settings.getIsAlertOn());
-        notifications.setChecked(settings.getIsNotificationsOn());
-        number.setText(settings.getPhoneNumber());
-        miBand.setText(settings.getMiBandAddress());
+        pulseFreqText.setText(String.valueOf(Settings.readInt(Settings.PULSE_FREQ_KEY, this)));
+        alerts.setChecked(Settings.readBool(Settings.ALERTS_KEY, this));
+        notifications.setChecked(Settings.readBool(Settings.NOTIFICATIONS_KEY, this));
+        number.setText(Settings.readString(Settings.NUMBER_KEY, this));
+        miBand.setText(Settings.readString(Settings.ADDRESS_KEY, this));
         // steps.setChecked(isStepCountOn);
 
         Toolbar appSettingsToolbar =
@@ -68,13 +58,11 @@ public class SettingsActivity extends AppCompatActivity {
         phoneNumber = number.getText().toString();
         miBandAddress = miBand.getText().toString();
 
-        SharedPreferences prefs = getSharedPreferences(Settings.APP , Context.MODE_PRIVATE);
-
-        prefs.edit().putBoolean(Settings.ALERTS_KEY, isAlertOn).apply();
-        prefs.edit().putInt(Settings.PULSE_FREQ_KEY, pulseFreqVal).apply();
-        prefs.edit().putBoolean(Settings.NOTIFICATIONS_KEY, isNotificationsOn).apply();
-        prefs.edit().putString(Settings.NUMBER_KEY, phoneNumber).apply();
-        prefs.edit().putString(Settings.ADDRESS_KEY, miBandAddress).apply();
+        Settings.saveSetting(Settings.PULSE_FREQ_KEY, pulseFreqVal, this);
+        Settings.saveSetting(Settings.ALERTS_KEY, isAlertOn, this);
+        Settings.saveSetting(Settings.NOTIFICATIONS_KEY, isNotificationsOn, this);
+        Settings.saveSetting(Settings.NUMBER_KEY, phoneNumber, this);
+        Settings.saveSetting(Settings.ADDRESS_KEY, miBandAddress, this);
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {

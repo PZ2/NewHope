@@ -8,7 +8,6 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.os.Binder;
@@ -19,7 +18,6 @@ import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.telephony.SmsManager;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import java.nio.ByteBuffer;
@@ -36,16 +34,10 @@ import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 
     public class TimeService extends Service implements BLEMiBand2Helper.BLEAction {
-        private final String APP = "com.example.het3crab.healthband";
-        private final String PULSE_FREQ_KEY = "com.example.het3crab.healthband.pulsefreq";
-        private final String BATTERY = "com.example.het3crab.healthband.battery";
-        private final String STEPS = "com.example.het3crab.healthband.steps";
         int pulseFreq;
         int average;
         boolean connect=false;
         private SmsManager smsManager = SmsManager.getDefault();
-
-        private Settings settings;
 
         public RealmResults<RealmPulseReading> pulses2;
         public List<RealmPulseReading> pulses2ToAdd = new ArrayList<>();
@@ -60,8 +52,6 @@ import io.realm.RealmResults;
 
         @Override
         public void onCreate() {
-            settings = new Settings(this);
-
             connectToMiBand();
 
             Intent notificationIntent = new Intent(this, MainActivity.class);
@@ -91,16 +81,15 @@ import io.realm.RealmResults;
         }
 
         public void pulseFreqUpdate(){
-            settings.readSettings();
-            pulseFreq = settings.getPulseFreqVal();
+            pulseFreq = Settings.readInt(Settings.PULSE_FREQ_KEY, this);
         }
 
         public void ifFreqChange(){
-            settings.readSettings();
-            if (settings.getPulseFreqVal() != pulseFreq) {
+            int pulseTemp = Settings.readInt(Settings.PULSE_FREQ_KEY, this);
+            if (pulseTemp != pulseFreq) {
                 mTimer.cancel();
                 mTimer = new Timer();
-                pulseFreq = settings.getPulseFreqVal();
+                pulseFreq = pulseTemp;
                 mTimer.scheduleAtFixedRate(new TimeDisplayTimerTask(), 0, pulseFreq * 1000);
             }
 
@@ -122,8 +111,7 @@ import io.realm.RealmResults;
 
             if (characteristic.getUuid().toString().equals(Consts.UUID_CHARACTERISTIC_6_BATTERY_INFO.toString())){
                 Log.d("odczyt baterii", " - odczyt baterii: " + characteristic.getValue()[1]);
-                SharedPreferences pref = this.getSharedPreferences(APP , Context.MODE_PRIVATE);
-                pref.edit().putInt(BATTERY, characteristic.getValue()[1]).apply();
+                Settings.saveSetting(Settings.BATTERY_KEY, characteristic.getValue()[1], this);
             }
             else if (characteristic.getUuid().toString().equals(Consts.UUID_CHARACTERISTIC_7_REALTIME_STEPS.toString())){
                 byte[] arr = {characteristic.getValue()[1] , characteristic.getValue()[2]};
@@ -131,8 +119,7 @@ import io.realm.RealmResults;
                 short kroki = wrapped.getShort();
 
                 Log.d("odczyt kroków", " - odczyt kroków: " + kroki);
-                SharedPreferences pref = this.getSharedPreferences(APP , Context.MODE_PRIVATE);
-                pref.edit().putInt(STEPS, kroki).apply();
+                Settings.saveSetting(Settings.STEPS_KEY, kroki, this);
             }
         }
 
@@ -168,7 +155,7 @@ import io.realm.RealmResults;
 
         public void sendSms()
         {
-            smsManager.sendTextMessage(new Settings(this).getPhoneNumber(), null, "elo", null, null);
+            smsManager.sendTextMessage(Settings.readString(Settings.NUMBER_KEY, this), null, "elo", null, null);
         }
 
         void lifeCheck() {

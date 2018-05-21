@@ -14,47 +14,49 @@ public class Settings {
     public static final String NOTIFICATIONS_KEY = "com.example.het3crab.healthband.notifications";
     public static final String NUMBER_KEY = "com.example.het3crab.healthband.number";
     public static final String ADDRESS_KEY = "com.example.het3crab.healthband.address";
+    public static final String BATTERY_KEY = "com.example.het3crab.healthband.battery";
+    public static final String STEPS_KEY = "com.example.het3crab.healthband.steps";
 
-    private boolean isAlertOn = false;
-    private boolean isNotificationsOn = false;
-    private int pulseFreqVal = 30;
-    private String phoneNumber = "";
-    private String miBandAddress = "D9:E3:90:3D:6F:93";
-
-    private Context mContext;
-
-    public Settings(Context context){
-        mContext = context;
-    }
-
-    public void readSettings(){
+    //miBandAddress = "D9:E3:90:3D:6F:93";
+    public static int readInt(String KEY, Context mContext){
         SharedPreferences prefs = mContext.getSharedPreferences(
                 APP , Context.MODE_PRIVATE);
 
-        isAlertOn = prefs.getBoolean(ALERTS_KEY, false);
-        pulseFreqVal = prefs.getInt(PULSE_FREQ_KEY, 60);
-        isNotificationsOn = prefs.getBoolean(NOTIFICATIONS_KEY, false);
-        phoneNumber = prefs.getString(NUMBER_KEY, "");
-        miBandAddress = prefs.getString(ADDRESS_KEY, "");
+        return prefs.getInt(KEY, 0);
     }
 
-    public int getPulseFreqVal(){
-        return pulseFreqVal;
+    public static boolean readBool(String KEY, Context mContext){
+        SharedPreferences prefs = mContext.getSharedPreferences(
+                APP , Context.MODE_PRIVATE);
+
+        return prefs.getBoolean(KEY, false);
     }
 
-    public boolean getIsAlertOn(){
-        return isAlertOn;
+    public static  String readString(String KEY, Context mContext){
+        SharedPreferences prefs = mContext.getSharedPreferences(
+                APP , Context.MODE_PRIVATE);
+
+        return prefs.getString(KEY, "");
     }
 
-    public boolean getIsNotificationsOn(){
-        return isNotificationsOn;
+    public static void saveSetting(String KEY, int value, Context mContext){
+        SharedPreferences prefs = mContext.getSharedPreferences(
+                APP, Context.MODE_PRIVATE);
+
+        prefs.edit().putInt(KEY, value).apply();
     }
 
-    public String getMiBandAddress(){
-        return miBandAddress;
+    public static void saveSetting(String KEY, boolean value, Context mContext){
+        SharedPreferences prefs = mContext.getSharedPreferences(
+                APP, Context.MODE_PRIVATE);
+
+        prefs.edit().putBoolean(KEY, value).apply();
     }
 
-    public String getPhoneNumber(){
-        return phoneNumber;
+    public static void saveSetting(String KEY, String value, Context mContext){
+        SharedPreferences prefs = mContext.getSharedPreferences(
+                APP, Context.MODE_PRIVATE);
+
+        prefs.edit().putString(KEY, value).apply();
     }
 }

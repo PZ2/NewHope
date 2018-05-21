@@ -1,32 +1,26 @@
 package com.example.misio.newhope;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.Context;
 import android.icu.util.Calendar;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.AppCompatTextView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
+import com.jjoe64.graphview.DefaultLabelFormatter;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GridLabelRenderer;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
-import javax.annotation.Nullable;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -105,8 +99,7 @@ public class PulseFragment extends Fragment{
         setHeartRate(heartRate);
 
         fap = getView().findViewById(R.id.fap);
-
-    fap.setOnClickListener(new View.OnClickListener() {
+        fap.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             mainActivity.mTimeService.odczytPulsu();
@@ -117,6 +110,81 @@ public class PulseFragment extends Fragment{
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        GraphView graph = (GraphView) getView().findViewById(R.id.graph);
+
+        graph.getGridLabelRenderer();
+        //graph.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+
+
+        graph.getGridLabelRenderer().setHorizontalLabelsVisible(false);
+        graph.getGridLabelRenderer().setHighlightZeroLines(false);
+        graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.HORIZONTAL);
+
+
+
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
+                new DataPoint(0, 60),
+                new DataPoint(1, 80),
+                new DataPoint(2, 70),
+                new DataPoint(3, 90),
+                new DataPoint(4, 60)
+        });
+        series.setAnimated(true);
+        series.setColor(R.color.colorAccent);
+        series.setDrawDataPoints(true);
+
+        graph.addSeries(series);
+
+        createGraph();
+    }
+
+    public void createGraph(){
+        GraphView graph = (GraphView) getView().findViewById(R.id.graph);
+
+        graph.getViewport().setYAxisBoundsManual(true);
+        graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+            @Override
+            public String formatLabel(double value, boolean isValueX) {
+                if (isValueX) {
+                    // show date values
+                    return getDate(value, "dd/MM HH:mm");
+                } else {
+                    // show normal y values
+                    return super.formatLabel(value, isValueX);
+                }
+            }
+        });
+
+        graph.getGridLabelRenderer().setNumHorizontalLabels(3);
+        graph.getViewport().setMinY(0);
+        graph.getViewport().setMaxY(220);
+
+        graph.getViewport().setXAxisBoundsManual(true);
+        graph.getViewport().setMinX(150000);
+        graph.getViewport().setMaxX(999999999);
+
+        graph.getViewport().setScrollable(true); // enables horizontal scrolling
+        graph.getViewport().setScrollableY(true); // enables vertical scrolling
+        graph.getViewport().setScalable(true);
+    }
+
+    public static Date getDate(long milliSeconds) {
+        // Create a calendar object that will convert the date and time value in milliseconds to date.
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milliSeconds);
+        return calendar.getTime();
+    }
+
+    public static String getDate(double milliSeconds, String dateFormat)
+    {
+        // Create a DateFormatter object for displaying date in specified format.
+        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
+
+        // Create a calendar object that will convert the date and time value in milliseconds to date.
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis((long) milliSeconds);
+        return formatter.format(calendar.getTime());
     }
 
 

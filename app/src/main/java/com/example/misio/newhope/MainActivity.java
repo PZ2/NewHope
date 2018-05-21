@@ -5,51 +5,29 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.content.Intent;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.Toast;
-
-import com.jjoe64.graphview.DefaultLabelFormatter;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
-
 public class MainActivity extends AppCompatActivity implements PulseFragment.OnFragmentInteractionListener, BatteryFragment.OnFragmentInteractionListener, StepsFragment.OnFragmentInteractionListener {
 
-    private final String APP = "com.example.het3crab.healthband";
-    private final String BATTERY = "com.example.het3crab.healthband.battery";
-    private final String STEPS = "com.example.het3crab.healthband.steps";
     private Notifications mNotifications;
 
     private int REQUEST_ENABLE_BT = 1;
@@ -194,9 +172,8 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
             @Override
             public void run() {runOnUiThread(new Runnable() {
                 public void run() {
-                    SharedPreferences pref = getSharedPreferences(APP , Context.MODE_PRIVATE);
-                    battery = pref.getInt(BATTERY, 100);
-                    steps = pref.getInt(STEPS, 1000);
+                    battery = Settings.readInt(Settings.BATTERY_KEY, MainActivity.this);
+                    steps = Settings.readInt(Settings.BATTERY_KEY, MainActivity.this);
                     pulseFragment.UpdateGUI();
                     batteryFragment.UpdateGUI(battery);
                     stepsFragment.UpdateGUI(steps);
@@ -229,21 +206,6 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-
-    }
-
-    void requestHehe(){
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (mBluetoothAdapter == null) {
-            // Device doesn't support Bluetooth
-        }
-
-        if (!mBluetoothAdapter.isEnabled()) {
-
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, 0);
-
-        }
 
     }
 
