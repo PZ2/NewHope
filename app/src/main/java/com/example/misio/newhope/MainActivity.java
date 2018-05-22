@@ -128,10 +128,6 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
 
-        if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.SEND_SMS}, 1);
-        }
-
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if(mBluetoothAdapter == null){
             //if bluetooth is not supported exit
@@ -181,6 +177,17 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
             });}
         }, 0, 5000);
 
+        Timer smsTimer = new Timer();
+        smsTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {runOnUiThread(new Runnable() {
+                public void run() {
+                    if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.SEND_SMS}, 1);
+                    }
+                }
+            });}
+        }, 5000);
     }
 
     @Override
