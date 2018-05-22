@@ -114,7 +114,7 @@ import io.realm.RealmResults;
                 Settings.saveSetting(Settings.BATTERY_KEY, characteristic.getValue()[1], this);
             }
             else if (characteristic.getUuid().toString().equals(Consts.UUID_CHARACTERISTIC_7_REALTIME_STEPS.toString())){
-                byte[] arr = {characteristic.getValue()[1] , characteristic.getValue()[2]};
+                byte[] arr = {characteristic.getValue()[2] , characteristic.getValue()[1]};
                 ByteBuffer wrapped = ByteBuffer.wrap(arr);
                 short kroki = wrapped.getShort();
 
@@ -131,26 +131,28 @@ import io.realm.RealmResults;
         @Override
         public void onNotification(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             UUID alertUUID = characteristic.getUuid();
-            Log.d("odczyt pulsu", " - odczyt pulsu: " + Arrays.toString(characteristic.getValue()));
+            Log.d("odczyt pulsu", " - odczyt pulsu: " + characteristic.getValue()[1]);
 
-            final RealmPulseReading pulse = new RealmPulseReading();
-            Calendar calendar = Calendar.getInstance();
-            java.util.Date now = calendar.getTime();
-            long x = now.getTime();
-            pulse.setDate(x);
-            pulse.setValue((int)(characteristic.getValue()[1]));
+            if (characteristic.getValue()[1] >= 0){
+                final RealmPulseReading pulse = new RealmPulseReading();
+                Calendar calendar = Calendar.getInstance();
+                java.util.Date now = calendar.getTime();
+                long x = now.getTime();
+                pulse.setDate(x);
+                pulse.setValue((int)(characteristic.getValue()[1]));
 
-            Realm.init(this);
-            RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
-            Realm realm = Realm.getInstance(realmConfiguration);
+                Realm.init(this);
+                RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+                Realm realm = Realm.getInstance(realmConfiguration);
 
-            realm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    realm.insertOrUpdate(pulse);
-                }
-            });
-            lifeCheck();
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        realm.insertOrUpdate(pulse);
+                    }
+                });
+                lifeCheck();
+            }
         }
 
         public void sendSms()

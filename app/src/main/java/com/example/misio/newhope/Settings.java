@@ -22,7 +22,7 @@ public class Settings {
         SharedPreferences prefs = mContext.getSharedPreferences(
                 APP , Context.MODE_PRIVATE);
 
-        return prefs.getInt(KEY, 0);
+        return prefs.getInt(KEY, 25);
     }
 
     public static boolean readBool(String KEY, Context mContext){
@@ -36,7 +36,7 @@ public class Settings {
         SharedPreferences prefs = mContext.getSharedPreferences(
                 APP , Context.MODE_PRIVATE);
 
-        return prefs.getString(KEY, "");
+        return prefs.getString(KEY, "D9:E3:90:3D:6F:93");
     }
 
     public static void saveSetting(String KEY, int value, Context mContext){
