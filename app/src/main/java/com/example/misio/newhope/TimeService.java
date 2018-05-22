@@ -114,7 +114,7 @@ import io.realm.RealmResults;
                 Settings.saveSetting(Settings.BATTERY_KEY, characteristic.getValue()[1], this);
             }
             else if (characteristic.getUuid().toString().equals(Consts.UUID_CHARACTERISTIC_7_REALTIME_STEPS.toString())){
-                byte[] arr = {characteristic.getValue()[1] , characteristic.getValue()[2]};
+                byte[] arr = {characteristic.getValue()[2] , characteristic.getValue()[1]};
                 ByteBuffer wrapped = ByteBuffer.wrap(arr);
                 short kroki = wrapped.getShort();
 

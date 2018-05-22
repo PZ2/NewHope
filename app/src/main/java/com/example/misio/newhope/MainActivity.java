@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
             public void run() {runOnUiThread(new Runnable() {
                 public void run() {
                     battery = Settings.readInt(Settings.BATTERY_KEY, MainActivity.this);
-                    steps = Settings.readInt(Settings.BATTERY_KEY, MainActivity.this);
+                    steps = Settings.readInt(Settings.STEPS_KEY, MainActivity.this);
                     pulseFragment.UpdateGUI();
                     batteryFragment.UpdateGUI(battery);
                     stepsFragment.UpdateGUI(steps);
