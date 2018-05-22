@@ -22,7 +22,7 @@ public class Settings {
         SharedPreferences prefs = mContext.getSharedPreferences(
                 APP , Context.MODE_PRIVATE);
 
-        return prefs.getInt(KEY, 60);
+        return prefs.getInt(KEY, 25);
     }
 
     public static boolean readBool(String KEY, Context mContext){

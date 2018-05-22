@@ -123,18 +123,18 @@ public class PulseFragment extends Fragment{
 
 
 
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
-                new DataPoint(0, 60),
-                new DataPoint(1, 80),
-                new DataPoint(2, 70),
-                new DataPoint(3, 90),
-                new DataPoint(4, 60)
-        });
-        series.setAnimated(true);
-        series.setColor(R.color.colorAccent);
-        series.setDrawDataPoints(true);
-
-        graph.addSeries(series);
+//        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
+//                new DataPoint(0, 60),
+//                new DataPoint(1, 80),
+//                new DataPoint(2, 70),
+//                new DataPoint(3, 90),
+//                new DataPoint(4, 60)
+//        });
+//        series.setAnimated(true);
+//        series.setColor(R.color.colorAccent);
+//        series.setDrawDataPoints(true);
+//
+//        graph.addSeries(series);
 
         createGraph();
     }
@@ -257,6 +257,26 @@ public class PulseFragment extends Fragment{
         });
 
         setHeartRate(heartRate);
+
+        DataPoint[] dataPoints = new DataPoint[pulses.size()];
+        int x = 0;
+        for(RealmPulseReading pulse : pulses){
+            DataPoint dataPoint = new DataPoint(getDate(pulse.getDate()), (double)pulse.getValue());
+            dataPoints[x] = dataPoint;
+            x++;
+        }
+
+        if (getView() != null) {
+            GraphView graph = (GraphView) getView().findViewById(R.id.graph);
+            LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dataPoints);
+
+            //series.setAnimated(true);
+            series.setColor(R.color.colorAccent);
+            series.setDrawDataPoints(true);
+
+            graph.removeAllSeries();
+            graph.addSeries(series);
+        }
 
         realm.close();
     }
