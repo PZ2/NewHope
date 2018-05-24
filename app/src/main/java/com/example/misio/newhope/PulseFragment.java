@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.jjoe64.graphview.DefaultLabelFormatter;
@@ -17,13 +18,16 @@ import com.jjoe64.graphview.GridLabelRenderer;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 
@@ -45,6 +49,13 @@ public class PulseFragment extends Fragment{
     int heartRate = 60;
     private FloatingActionButton fap;
     public MainActivity mainActivity;
+
+    private Button graphButton;
+    private TextView timeBeg, dateBeg, timeEnd, dateEnd;
+    private int hoursBeg, minutesBeg, hoursEnd, minutesEnd;
+    private int yearBeg, monthBeg, dayBeg, yearEnd, monthEnd, dayEnd;
+    private String timeBegDate, timeEndDate;
+    public long beg, end;
 
     public RealmResults<RealmPulseReading> pulses;
     public List<RealmPulseReading> pulsesToAdd = new ArrayList<>();
@@ -104,7 +115,79 @@ public class PulseFragment extends Fragment{
         public void onClick(View view) {
             mainActivity.mTimeService.odczytPulsu();
         }
-    });
+        });
+
+        /*Generuje graf pulsów między podanymi datami
+        graphButton = getView().findViewById(R.id.graphButton);
+        graphButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.US);
+                formatter.setLenient(false);
+
+                Date oldDate = null;
+                try {
+                    oldDate = formatter.parse(timeBegDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                beg = oldDate.getTime();
+
+                Date newDate = null;
+                try {
+                    newDate = formatter.parse(timeEndDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                end = newDate.getTime();
+
+
+                //pulses = realm.where(RealmPulseReading.class).between("date" , beg, end).findAll();
+
+            }
+        });
+        */
+
+        timeBeg = getView().findViewById(R.id.timeBeg);
+        timeBeg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TimePickerFragment dialog = new TimePickerFragment();
+                dialog.setListener(PulseFragment.this, TimePickerFragment.TIME_BEG);
+                dialog.show(getFragmentManager(), "Time Picker");
+            }
+        });
+
+        dateBeg = getView().findViewById(R.id.dateBeg);
+        dateBeg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatePickerFragment dialog = new DatePickerFragment();
+                dialog.setListener(PulseFragment.this, DatePickerFragment.DATE_BEG);
+                dialog.show(getFragmentManager(), "Date Picker");
+            }
+        });
+
+        timeEnd = getView().findViewById(R.id.timeEnd);
+        timeEnd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TimePickerFragment dialog = new TimePickerFragment();
+                dialog.setListener(PulseFragment.this, TimePickerFragment.TIME_END);
+                dialog.show(getFragmentManager(), "Time Picker");
+            }
+        });
+
+        dateEnd = getView().findViewById(R.id.dateEnd);
+        dateEnd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatePickerFragment dialog = new DatePickerFragment();
+                dialog.setListener(PulseFragment.this, DatePickerFragment.DATE_END);
+                dialog.show(getFragmentManager(), "Date Picker");
+            }
+        });
+
 
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -258,7 +341,7 @@ public class PulseFragment extends Fragment{
 
         setHeartRate(heartRate);
 
-        DataPoint[] dataPoints = new DataPoint[pulses.size()];
+        /*DataPoint[] dataPoints = new DataPoint[pulses.size()];
         int x = 0;
         for(RealmPulseReading pulse : pulses){
             DataPoint dataPoint = new DataPoint(getDate(pulse.getDate()), (double)pulse.getValue());
@@ -276,9 +359,81 @@ public class PulseFragment extends Fragment{
 
             graph.removeAllSeries();
             graph.addSeries(series);
-        }
+        }*/
 
         realm.close();
     }
 
+    public void onTimeSet(String who, int hours, int minutes){
+        switch (who){
+            case TimePickerFragment.TIME_BEG:
+                hoursBeg = hours;
+                minutesBeg = minutes;
+                break;
+
+            case TimePickerFragment.TIME_END:
+                hoursEnd = hours;
+                minutesEnd = minutes;
+                break;
+        }
+
+        updateTimeAndDate();
+    }
+
+    public void onDateSet(String who, int year, int month, int day){
+        switch (who){
+            case DatePickerFragment.DATE_BEG:
+                yearBeg = year;
+                monthBeg = month;
+                dayBeg = day;
+                break;
+
+            case DatePickerFragment.DATE_END:
+                yearEnd = year;
+                monthEnd = month;
+                dayEnd = day;
+                break;
+        }
+
+        updateTimeAndDate();
+    }
+
+    private void updateTimeAndDate(){
+        String time = "";
+        time += hoursBeg;
+        time += ":";
+        time += minutesBeg;
+        timeBeg.setText(time);
+
+        String date = "";
+        date += dayBeg;
+        date += ".";
+        date += monthBeg;
+        date += ".";
+        date += yearBeg;
+        dateBeg.setText(date);
+
+        timeBegDate += date;
+        timeBegDate += " ";
+        timeBegDate += time;
+
+        time = "";
+        time += hoursEnd;
+        time += ":";
+        time += minutesEnd;
+        timeEnd.setText(time);
+
+
+        date = "";
+        date += dayEnd;
+        date += ".";
+        date += monthEnd;
+        date += ".";
+        date += yearEnd;
+        dateEnd.setText(date);
+
+        timeEndDate += date;
+        timeEndDate += " ";
+        timeEndDate += time;
+    }
 }
