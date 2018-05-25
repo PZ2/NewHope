@@ -249,7 +249,7 @@ public class PulseFragment extends Fragment{
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                pulses = realm.where(RealmPulseReading.class).findAll();
+                pulses = realm.where(RealmPulseReading.class).notEqualTo("value",0).findAll();
                 if(pulses.size()>0) {
                     heartRate = pulses.get(pulses.size() - 1).getValue();
                 }
@@ -258,25 +258,26 @@ public class PulseFragment extends Fragment{
 
         setHeartRate(heartRate);
 
-        DataPoint[] dataPoints = new DataPoint[pulses.size()];
-        int x = 0;
-        for(RealmPulseReading pulse : pulses){
-            DataPoint dataPoint = new DataPoint(getDate(pulse.getDate()), (double)pulse.getValue());
-            dataPoints[x] = dataPoint;
-            x++;
-        }
+            DataPoint[] dataPoints = new DataPoint[pulses.size()];
+            int x = 0;
+            for(RealmPulseReading pulse : pulses){
+                DataPoint dataPoint = new DataPoint(getDate(pulse.getDate()), (double)pulse.getValue());
+                dataPoints[x] = dataPoint;
+                x++;
+            }
 
-        if (getView() != null) {
-            GraphView graph = (GraphView) getView().findViewById(R.id.graph);
-            LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dataPoints);
+            if (getView() != null) {
+                GraphView graph = (GraphView) getView().findViewById(R.id.graph);
+                LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dataPoints);
 
-            //series.setAnimated(true);
-            series.setColor(R.color.colorAccent);
-            series.setDrawDataPoints(true);
+                //series.setAnimated(true);
+                series.setColor(R.color.colorAccent);
+                series.setDrawDataPoints(true);
 
-            graph.removeAllSeries();
-            graph.addSeries(series);
-        }
+                graph.removeAllSeries();
+                graph.addSeries(series);
+            }
+
 
         realm.close();
     }

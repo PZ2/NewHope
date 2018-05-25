@@ -13,15 +13,19 @@ public class SettingsActivity extends AppCompatActivity {
 
     private boolean isAlertOn = false;
     private boolean isNotificationsOn = false;
-    private int pulseFreqVal = 30;
+    private int pulseFreqVal;
     private String phoneNumber = "";
     private String miBandAddress = "D9:E3:90:3D:6F:93";
+    private int minPulseVal;
+    private int maxPulseVal;
 
     private EditText pulseFreqText;
     private Switch alerts;
     private Switch notifications;
     private EditText number;
     private EditText miBand;
+    private EditText minPulse;
+    private EditText maxPulse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,13 +37,17 @@ public class SettingsActivity extends AppCompatActivity {
         notifications = findViewById(R.id.notifications);
         number = findViewById(R.id.number);
         miBand = findViewById(R.id.miBand);
+        minPulse = findViewById(R.id.lifeCheck1);
+        maxPulse = findViewById(R.id.lifeCheck2);
 
         //update settings view
         pulseFreqText.setText(String.valueOf(Settings.readInt(Settings.PULSE_FREQ_KEY, this)));
         alerts.setChecked(Settings.readBool(Settings.ALERTS_KEY, this));
         notifications.setChecked(Settings.readBool(Settings.NOTIFICATIONS_KEY, this));
-        number.setText(Settings.readString(Settings.NUMBER_KEY, this));
+        number.setText(Settings.readPhoneNumber(Settings.NUMBER_KEY, this));
         miBand.setText(Settings.readString(Settings.ADDRESS_KEY, this));
+        minPulse.setText(String.valueOf(Settings.readMinPulse(Settings.MINPULSE_KEY,this)));
+        maxPulse.setText(String.valueOf(Settings.readMaxPulse(Settings.MAXPULSE_KEY,this)));
         // steps.setChecked(isStepCountOn);
 
         Toolbar appSettingsToolbar =
@@ -57,12 +65,16 @@ public class SettingsActivity extends AppCompatActivity {
         isNotificationsOn = notifications.isChecked();
         phoneNumber = number.getText().toString();
         miBandAddress = miBand.getText().toString();
+        minPulseVal = Integer.parseInt(minPulse.getText().toString());
+        maxPulseVal = Integer.parseInt(maxPulse.getText().toString());
 
         Settings.saveSetting(Settings.PULSE_FREQ_KEY, pulseFreqVal, this);
         Settings.saveSetting(Settings.ALERTS_KEY, isAlertOn, this);
         Settings.saveSetting(Settings.NOTIFICATIONS_KEY, isNotificationsOn, this);
         Settings.saveSetting(Settings.NUMBER_KEY, phoneNumber, this);
         Settings.saveSetting(Settings.ADDRESS_KEY, miBandAddress, this);
+        Settings.saveSetting(Settings.MINPULSE_KEY, minPulseVal, this);
+        Settings.saveSetting(Settings.MAXPULSE_KEY,maxPulseVal,this);
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {

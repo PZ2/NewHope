@@ -21,6 +21,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.nio.ByteBuffer;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -178,14 +179,21 @@ import io.realm.RealmResults;
                 @Override
                 public void execute(Realm realm) {
                     pulses2 = realm.where(RealmPulseReading.class).findAll();
-                    if (pulses2.size() > 3) {
-                        average = (pulses2.get(pulses2.size() - 1).getValue() + pulses2.get(pulses2.size() - 2).getValue() + pulses2.get(pulses2.size() - 3).getValue() + pulses2.get(pulses2.size() - 4).getValue()) / 4;
+                    if (pulses2.size() > 9) {
+                        average = 0;
+                        for (int i=1; i<11; i++){
+                            average += pulses2.get(pulses2.size() - i).getValue();
+                        }
+                        average /= 10;
                         Log.d("średnia", String.valueOf(average));
-                        if (average > 180 || average < 35) {
+                        if (average > Settings.readMaxPulse(Settings.MAXPULSE_KEY, TimeService.this) || average < Settings.readMinPulse(Settings.MINPULSE_KEY, TimeService.this)) {
                             Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                             // Vibrate for 500 milliseconds
                             v.vibrate(500);
 
+                            if (pulses2.get(pulses2.size() - 1).getValue() == 0){
+                                odczytPulsu();
+                            }
                             sendSms();
                         }
 
