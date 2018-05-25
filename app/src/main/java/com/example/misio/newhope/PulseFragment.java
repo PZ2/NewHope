@@ -117,7 +117,6 @@ public class PulseFragment extends Fragment{
         }
         });
 
-        /*Generuje graf pulsów między podanymi datami
         graphButton = getView().findViewById(R.id.graphButton);
         graphButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,12 +140,19 @@ public class PulseFragment extends Fragment{
                 }
                 end = newDate.getTime();
 
+                Realm.init(getContext());
+                RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+                Realm realm = Realm.getInstance(realmConfiguration);
 
-                //pulses = realm.where(RealmPulseReading.class).between("date" , beg, end).findAll();
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        pulses = realm.where(RealmPulseReading.class).between("date" , beg, end).findAll();
+                    }
+                });
 
             }
         });
-        */
 
         timeBeg = getView().findViewById(R.id.timeBeg);
         timeBeg.setOnClickListener(new View.OnClickListener() {
