@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
     TimeService mTimeService;
     int battery;
     int steps;
+    String batteryDays;
+    String batteryH;
 
     public BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -170,8 +172,10 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
                 public void run() {
                     battery = Settings.readInt(Settings.BATTERY_KEY, MainActivity.this);
                     steps = Settings.readInt(Settings.STEPS_KEY, MainActivity.this);
+                    batteryDays = Settings.batteryDate(Settings.BATTERYDAYS_KEY, MainActivity.this);
+                    batteryH = Settings.batteryDate(Settings.BATTERYHOURS_KEY, MainActivity.this);
                     pulseFragment.UpdateGUI();
-                    batteryFragment.UpdateGUI(battery);
+                    batteryFragment.UpdateGUI(battery, batteryDays, batteryH);
                     stepsFragment.UpdateGUI(steps);
                 }
             });}

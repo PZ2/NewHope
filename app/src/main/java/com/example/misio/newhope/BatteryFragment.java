@@ -21,7 +21,10 @@ public class BatteryFragment extends Fragment {
 
     public MainActivity mainActivity;
     public TextView batteryRate;
+    public TextView batteryTime;
     public int batt = 60;
+    public int days = 10;
+    public int hours = 10;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -76,6 +79,9 @@ public class BatteryFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState){
         batteryRate = (TextView) getView().findViewById(R.id.batteryRate);
         if (batteryRate != null) batteryRate.setText(String.valueOf(batt));
+
+        batteryTime = (TextView) getView().findViewById(R.id.batteryTime);
+        if (batteryTime != null) batteryTime.setText(days + " days " + hours + " hours have passed since the last charge");
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -117,7 +123,8 @@ public class BatteryFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    void UpdateGUI(int battery){
+    void UpdateGUI(int battery, String day, String hour){
         if (batteryRate != null) batteryRate.setText(String.valueOf(battery));
+        if (batteryTime != null) batteryTime.setText(day + " days " + hour + " hours have passed since the last charge");
     }
 }

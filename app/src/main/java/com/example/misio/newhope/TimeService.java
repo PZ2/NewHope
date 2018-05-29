@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -62,8 +63,8 @@ import io.realm.RealmResults;
 
             Notification notification = new NotificationCompat.Builder(this)
                     .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle("My Awesome App")
-                    .setContentText("Doing some work...")
+                    .setContentTitle("Healthband")
+                    .setContentText("Mierzy puls")
                     .setContentIntent(pendingIntent).build();
 
             startForeground(1337, notification);
@@ -112,7 +113,30 @@ import io.realm.RealmResults;
 
             if (characteristic.getUuid().toString().equals(Consts.UUID_CHARACTERISTIC_6_BATTERY_INFO.toString())){
                 Log.d("odczyt baterii", " - odczyt baterii: " + characteristic.getValue()[1]);
+               // Log.d("rok", " - odczyt baterii: " + characteristic.getValue()[1]);
                 Settings.saveSetting(Settings.BATTERY_KEY, characteristic.getValue()[1], this);
+
+                byte[] arr = {characteristic.getValue()[12] , characteristic.getValue()[11]};
+                ByteBuffer wrapped = ByteBuffer.wrap(arr);
+                short rok = wrapped.getShort();
+                short miesiac = characteristic.getValue()[13];
+                short dzien = characteristic.getValue()[14];
+                short godzina = characteristic.getValue()[15];
+                short minuta = characteristic.getValue()[16];
+                short sekunda = characteristic.getValue()[17];
+
+                Date data = new Date(rok-1900, miesiac-1, dzien, godzina, minuta, sekunda);
+                Date date = new Date();
+                long diffInMillies = Math.abs(date.getTime() - data.getTime());
+                long days = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+                long diffinh = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+                long h = diffinh - days*24;
+
+                Settings.saveSetting(Settings.BATTERYDAYS_KEY, String.valueOf(days), this);
+                Settings.saveSetting(Settings.BATTERYHOURS_KEY, String.valueOf(h), this);
+
+
+
             }
             else if (characteristic.getUuid().toString().equals(Consts.UUID_CHARACTERISTIC_7_REALTIME_STEPS.toString())){
                 byte[] arr = {characteristic.getValue()[2] , characteristic.getValue()[1]};
@@ -156,9 +180,9 @@ import io.realm.RealmResults;
             }
         }
 
-        public void sendSms()
+        public void sendSms(int srednia)
         {
-            smsManager.sendTextMessage(Settings.readString(Settings.NUMBER_KEY, this), null, "elo", null, null);
+            smsManager.sendTextMessage(Settings.readString(Settings.NUMBER_KEY, this), null, "average of the 10 last pulse readings is "+String.valueOf(srednia)+" which is not within your limit", null, null);
         }
 
         void lifeCheck() {
@@ -194,7 +218,7 @@ import io.realm.RealmResults;
                             if (pulses2.get(pulses2.size() - 1).getValue() == 0){
                                 odczytPulsu();
                             }
-                            sendSms();
+                            sendSms(average);
                         }
 
                     }
@@ -288,4 +312,6 @@ import io.realm.RealmResults;
         public void odczytKrokow(){
             helper.readData(Consts.UUID_SERVICE_MIBAND_SERVICE, Consts.UUID_CHARACTERISTIC_7_REALTIME_STEPS);
         }
+
+
     }
