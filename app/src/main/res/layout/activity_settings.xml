@@ -77,12 +77,10 @@
     <Button
         android:id="@+id/button"
         style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="0dp"
+        android:layout_width="184dp"
         android:layout_height="wrap_content"
         android:text="Connect"
         android:textColor="@android:color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/settings_toolbar" />
 
@@ -165,5 +163,14 @@
         android:text="powyżej:"
         app:layout_constraintStart_toEndOf="@+id/lifeCheck1"
         app:layout_constraintTop_toBottomOf="@+id/lifeCheckText" />
+
+    <Button
+        android:id="@+id/signinButton"
+        android:layout_width="191dp"
+        android:layout_height="wrap_content"
+        android:text="LOGIN"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/button"
+        app:layout_constraintTop_toBottomOf="@+id/settings_toolbar" />
 
 </android.support.constraint.ConstraintLayout>

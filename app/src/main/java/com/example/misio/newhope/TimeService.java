@@ -215,8 +215,8 @@ import io.realm.RealmResults;
                         Map<String, String>  params = new HashMap<String, String>();
                         params.put("pulsevalue", Integer.toString((int)(characteristic.getValue()[1])));
                         params.put("pulsedate", simpleDate.format(calendar.getTime()));
-                        params.put("username", "testuser");
-                        params.put("password", "test1234");
+                        params.put("username", Settings.readString(Settings.USER_LOGIN_KEY, TimeService.this));
+                        params.put("password", Settings.readString(Settings.USER_PASS_KEY, TimeService.this));
 
                         return params;
                     }

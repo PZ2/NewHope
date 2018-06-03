@@ -20,6 +20,8 @@ public class Settings {
     public static final String MAXPULSE_KEY = "com.example.het3crab.healthband.maxpulse";
     public static final String BATTERYDAYS_KEY = "com.example.het3crab.healthband.batterydays";
     public static final String BATTERYHOURS_KEY = "com.example.het3crab.healthband.batteryhours";
+    public static final String USER_LOGIN_KEY = "com.example.het3crab.healthband.login";
+    public static final String USER_PASS_KEY = "com.example.het3crab.healthband.password";
 
     //miBandAddress = "D9:E3:90:3D:6F:93";
     public static int readInt(String KEY, Context mContext) {
