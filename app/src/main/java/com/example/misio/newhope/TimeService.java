@@ -20,12 +20,21 @@ import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 import java.nio.ByteBuffer;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -154,13 +163,13 @@ import io.realm.RealmResults;
         }
 
         @Override
-        public void onNotification(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+        public void onNotification(BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic) {
             UUID alertUUID = characteristic.getUuid();
             Log.d("odczyt pulsu", " - odczyt pulsu: " + characteristic.getValue()[1]);
 
             if (characteristic.getValue()[1] >= 0){
                 final RealmPulseReading pulse = new RealmPulseReading();
-                Calendar calendar = Calendar.getInstance();
+                final Calendar calendar = Calendar.getInstance();
                 java.util.Date now = calendar.getTime();
                 long x = now.getTime();
                 pulse.setDate(x);
@@ -177,6 +186,42 @@ import io.realm.RealmResults;
                     }
                 });
                 lifeCheck();
+
+                final SimpleDateFormat simpleDate =  new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
+                RequestQueue queue = Volley.newRequestQueue(this);
+                final String url = "http://healthband-app.herokuapp.com/HBPulse/add-pulse/";
+                StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                        new Response.Listener<String>()
+                        {
+                            @Override
+                            public void onResponse(String response) {
+                                // response
+                                Log.d("Response", response);
+                            }
+                        },
+                        new Response.ErrorListener()
+                        {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                // error
+                                Log.d("Error.Response", "error");
+                            }
+                        }
+                ) {
+                    @Override
+                    protected Map<String, String> getParams()
+                    {
+                        Map<String, String>  params = new HashMap<String, String>();
+                        params.put("pulsevalue", Integer.toString((int)(characteristic.getValue()[1])));
+                        params.put("pulsedate", simpleDate.format(calendar.getTime()));
+                        params.put("username", "testuser");
+                        params.put("password", "test1234");
+
+                        return params;
+                    }
+                };
+                queue.add(postRequest);
             }
         }
 

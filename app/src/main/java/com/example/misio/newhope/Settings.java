@@ -18,7 +18,7 @@ public class Settings {
     public static final String STEPS_KEY = "com.example.het3crab.healthband.steps";
     public static final String MINPULSE_KEY = "com.example.het3crab.healthband.minpulse";
     public static final String MAXPULSE_KEY = "com.example.het3crab.healthband.maxpulse";
-    public static final String BATTERYDAYS_KEY = "com.example.het3crab.healthband.maxpulse";
+    public static final String BATTERYDAYS_KEY = "com.example.het3crab.healthband.batterydays";
     public static final String BATTERYHOURS_KEY = "com.example.het3crab.healthband.batteryhours";
 
     //miBandAddress = "D9:E3:90:3D:6F:93";
@@ -40,7 +40,7 @@ public class Settings {
         SharedPreferences prefs = mContext.getSharedPreferences(
                 APP, Context.MODE_PRIVATE);
 
-        return prefs.getString(KEY, "D9:E3:90:3D:6F:93");
+        return prefs.getString(KEY, "DD:B0:AF:B3:09:42");
     }
 
     public static void saveSetting(String KEY, int value, Context mContext) {
