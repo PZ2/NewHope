@@ -30,6 +30,7 @@ public class SettingsActivity extends AppCompatActivity {
     private EditText minPulse;
     private EditText maxPulse;
     private Button signinButton;
+    private Button connectButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,15 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        connectButton = findViewById(R.id.connectButton);
+        connectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SettingsActivity.this, SearchActivity.class);
                 startActivity(intent);
             }
         });
