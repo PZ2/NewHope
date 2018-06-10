@@ -22,6 +22,11 @@ public class Settings {
     public static final String BATTERYHOURS_KEY = "com.example.het3crab.healthband.batteryhours";
     public static final String USER_LOGIN_KEY = "com.example.het3crab.healthband.login";
     public static final String USER_PASS_KEY = "com.example.het3crab.healthband.password";
+    public static final String CALLORIES_KEY = "com.example.het3crab.healthband.callories";
+    public static final String DISTANCE_KEY = "com.example.het3crab.healthband.distance";
+    public static final String DATE_KEY = "com.example.het3crab.healthband.date";
+    public static final String DATE_KEY1 = "com.example.het3crab.healthband.date1";
+    public static final String STEPSGOAL_KEY = "com.example.het3crab.healthband.stepsgoal";
 
     //miBandAddress = "D9:E3:90:3D:6F:93";
     public static int readInt(String KEY, Context mContext) {
@@ -92,6 +97,51 @@ public class Settings {
                 APP, Context.MODE_PRIVATE);
 
         return prefs.getString(KEY, "10");
+    }
+
+    public static int readPulseFreq(String KEY, Context mContext) {
+        SharedPreferences prefs = mContext.getSharedPreferences(
+                APP, Context.MODE_PRIVATE);
+
+        return prefs.getInt(KEY, 25);
+    }
+
+    public static int readStepsGoal(String KEY, Context mContext) {
+        SharedPreferences prefs = mContext.getSharedPreferences(
+                APP, Context.MODE_PRIVATE);
+
+        return prefs.getInt(KEY, 10000);
+    }
+
+    public static String readCallories(String KEY, Context mContext) {
+        SharedPreferences prefs = mContext.getSharedPreferences(
+                APP, Context.MODE_PRIVATE);
+
+        return prefs.getString(KEY, "300");
+
+    }
+
+    public static String readDistance(String KEY, Context mContext) {
+        SharedPreferences prefs = mContext.getSharedPreferences(
+                APP, Context.MODE_PRIVATE);
+
+        return prefs.getString(KEY, "10.00");
+
+    }
+
+    public static int readDate(String KEY, Context mContext) {
+        SharedPreferences prefs = mContext.getSharedPreferences(
+                APP, Context.MODE_PRIVATE);
+
+        return prefs.getInt(KEY, 32);
+
+    }
+
+    public static int readDate1(String KEY, Context mContext) {
+        SharedPreferences prefs = mContext.getSharedPreferences(
+                APP, Context.MODE_PRIVATE);
+
+        return prefs.getInt(KEY, 32);
 
     }
 }

@@ -73,7 +73,7 @@ import io.realm.RealmResults;
             Notification notification = new NotificationCompat.Builder(this)
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setContentTitle("Healthband")
-                    .setContentText("Mierzy puls")
+                    .setContentText("Measuring pulse now.")
                     .setContentIntent(pendingIntent).build();
 
             startForeground(1337, notification);
@@ -151,9 +151,23 @@ import io.realm.RealmResults;
                 byte[] arr = {characteristic.getValue()[2] , characteristic.getValue()[1]};
                 ByteBuffer wrapped = ByteBuffer.wrap(arr);
                 short kroki = wrapped.getShort();
+                int kalorie = characteristic.getValue()[9];
+
+                byte[] arrr = {characteristic.getValue()[6] , characteristic.getValue()[5]};
+                ByteBuffer wrapp = ByteBuffer.wrap(arrr);
+                double km = wrapp.getShort();
+
+                km -= km%10;
+                km /= 1000;
 
                 Log.d("odczyt kroków", " - odczyt kroków: " + kroki);
                 Settings.saveSetting(Settings.STEPS_KEY, kroki, this);
+
+                Log.d("odczyt kalorii", " - odczyt kalorii: " + kalorie);
+                Settings.saveSetting(Settings.CALLORIES_KEY, String.valueOf(kalorie), this);
+
+                Log.d("odczyt dystansu", " - odczyt dystansu: " + km);
+                Settings.saveSetting(Settings.DISTANCE_KEY, String.format("%.2f", km), this);
             }
         }
 

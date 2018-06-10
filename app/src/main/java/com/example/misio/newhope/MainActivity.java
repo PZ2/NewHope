@@ -9,6 +9,7 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
@@ -22,6 +23,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -37,6 +40,7 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -57,8 +61,12 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
     TimeService mTimeService;
     int battery;
     int steps;
+    int stepGoal;
+
     String batteryDays;
     String batteryH;
+    String distance;
+    String callories;
 
     public BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -139,6 +147,12 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+        }
+
         pulseFragment.mainActivity = this;
         batteryFragment.mainActivity = this;
         stepsFragment.mainActivity = this;
@@ -193,9 +207,29 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
                     steps = Settings.readInt(Settings.STEPS_KEY, MainActivity.this);
                     batteryDays = Settings.batteryDate(Settings.BATTERYDAYS_KEY, MainActivity.this);
                     batteryH = Settings.batteryDate(Settings.BATTERYHOURS_KEY, MainActivity.this);
+                    callories = Settings.readCallories(Settings.CALLORIES_KEY, MainActivity.this);
+                    distance = Settings.readDistance(Settings.DISTANCE_KEY, MainActivity.this);
+                    stepGoal = Settings.readStepsGoal(Settings.STEPSGOAL_KEY, MainActivity.this);
                     pulseFragment.UpdateGUI();
                     batteryFragment.UpdateGUI(battery, batteryDays, batteryH);
-                    stepsFragment.UpdateGUI(steps);
+                    stepsFragment.UpdateGUI(steps, callories, distance, stepGoal);
+
+                    int currentTime = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+                    int currentTime1 = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+
+
+                    int previousTime = Settings.readDate(Settings.DATE_KEY, MainActivity.this);
+                    int previousTime1 = Settings.readDate(Settings.DATE_KEY1, MainActivity.this);
+
+                    if (steps >= stepGoal && currentTime != previousTime) {
+                        Settings.saveSetting(Settings.DATE_KEY, currentTime, MainActivity.this);
+                        mNotifications.showNotification("Daily Goal Achieved", "You have reached " + stepGoal + " steps today! Congratulations!", "Daily Goal", MainActivity.class);
+                    }
+
+                    if (battery <= 15 && currentTime1 != previousTime1) {
+                        Settings.saveSetting(Settings.DATE_KEY1, currentTime1, MainActivity.this);
+                        mNotifications.showNotification("MiBand's battery is low", "Currently " + battery + " %", "Battery Low", MainActivity.class);
+                    }
                 }
             });}
         }, 0, 5000);

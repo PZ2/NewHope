@@ -2,11 +2,15 @@ package com.example.misio.newhope;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
@@ -22,7 +26,13 @@ public class StepsFragment extends Fragment {
 
     public MainActivity mainActivity;
     public TextView stepsRate;
+    public TextView calloriesView;
+    public TextView distanceView;
     public int step = 1000;
+    public int step_goal;
+    public String dist = "10000";
+    public String call = "300";
+    public ProgressBar progressBar;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -65,6 +75,12 @@ public class StepsFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getActivity().getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(getResources().getColor(R.color.colorStepsDark));
+        }
+
     }
 
     @Override
@@ -81,6 +97,20 @@ public class StepsFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
+        step_goal = Settings.readStepsGoal(Settings.STEPSGOAL_KEY, getContext());
+
+        progressBar = (ProgressBar) getView().findViewById(R.id.progressBar);
+        if (progressBar != null){
+            progressBar.setMax(step_goal);
+            progressBar.setProgress(step);
+        }
+
+        calloriesView = (TextView) getView().findViewById(R.id.calloriesView);
+        if (calloriesView != null) calloriesView.setText(call);
+
+        distanceView = (TextView) getView().findViewById(R.id.distanceView);
+        if (distanceView != null) distanceView.setText(dist);
+
         stepsRate = (TextView) getView().findViewById(R.id.stepsRate);
         if (stepsRate != null) stepsRate.setText(String.valueOf(step));
     }
@@ -125,7 +155,13 @@ public class StepsFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    void UpdateGUI(int steps){
+    void UpdateGUI(int steps, String callories, String distance, int stepGoal){
         if (stepsRate != null) stepsRate.setText(String.valueOf(steps));
+        if (calloriesView != null) calloriesView.setText(String.valueOf(callories));
+        if (distanceView != null) distanceView.setText(String.valueOf(distance));
+        if (progressBar != null){
+            progressBar.setMax(stepGoal);
+            progressBar.setProgress(steps);
+        }
     }
 }

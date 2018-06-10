@@ -2,11 +2,14 @@ package com.example.misio.newhope;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 /**
@@ -65,6 +68,12 @@ public class BatteryFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getActivity().getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(getResources().getColor(R.color.colorBatteryDark));
         }
     }
 
@@ -125,6 +134,6 @@ public class BatteryFragment extends Fragment {
 
     void UpdateGUI(int battery, String day, String hour){
         if (batteryRate != null) batteryRate.setText(String.valueOf(battery));
-        if (batteryTime != null) batteryTime.setText(day + " days " + hour + " hours have passed since the last charge");
+        if (batteryTime != null) batteryTime.setText(day + " days " + hour + " hours");
     }
 }
