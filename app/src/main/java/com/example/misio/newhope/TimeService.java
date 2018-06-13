@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
+import android.icu.util.TimeZone;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
@@ -183,6 +184,8 @@ import io.realm.RealmResults;
 
             if (characteristic.getValue()[1] >= 0){
                 final RealmPulseReading pulse = new RealmPulseReading();
+                final SimpleDateFormat simpleDate =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                simpleDate.setTimeZone(TimeZone.getTimeZone("Poland"));
                 final Calendar calendar = Calendar.getInstance();
                 java.util.Date now = calendar.getTime();
                 long x = now.getTime();
@@ -200,8 +203,6 @@ import io.realm.RealmResults;
                     }
                 });
                 lifeCheck();
-                
-                final SimpleDateFormat simpleDate =  new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
                 RequestQueue queue = Volley.newRequestQueue(this);
                 final String url = "http://healthband-app.herokuapp.com/HBPulse/add-pulse/";
@@ -308,8 +309,6 @@ import io.realm.RealmResults;
                                 e.printStackTrace();
                             }
                             odczytPulsu();
-                            Toast.makeText(getApplicationContext(), getDateTime(),
-                                    Toast.LENGTH_SHORT).show();
                         }
                         else {
                             requestHehe();
@@ -318,12 +317,6 @@ import io.realm.RealmResults;
                     }
 
                 });
-            }
-
-            private String getDateTime() {
-                // get date time in custom format
-                SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
-                return sdf.format(new Date());
             }
 
         }
