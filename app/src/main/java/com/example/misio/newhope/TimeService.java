@@ -11,7 +11,11 @@ import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.icu.util.TimeZone;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -27,6 +31,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.nio.ByteBuffer;
 import java.sql.Time;
@@ -45,11 +50,21 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 
-    public class TimeService extends Service implements BLEMiBand2Helper.BLEAction {
+    public class TimeService extends Service implements BLEMiBand2Helper.BLEAction, LocationListener{
         int pulseFreq;
         int average;
-        boolean connect=false;
+        boolean connect = false;
         private SmsManager smsManager = SmsManager.getDefault();
+
+        protected LocationManager locationManager;
+        protected LocationListener locationListener;
+        protected Context context;
+
+
+        String lat;
+        String provider;
+        protected String latitude,longitude;
+        protected boolean gps_enabled,network_enabled;
 
         public RealmResults<RealmPulseReading> pulses2;
         public List<RealmPulseReading> pulses2ToAdd = new ArrayList<>();
@@ -65,6 +80,10 @@ import io.realm.RealmResults;
         @Override
         public void onCreate() {
             connectToMiBand();
+
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+
 
             Intent notificationIntent = new Intent(this, MainActivity.class);
 
@@ -90,6 +109,30 @@ import io.realm.RealmResults;
             }
             // schedule task
             mTimer.scheduleAtFixedRate(new TimeDisplayTimerTask(), 0, pulseFreq * 1000);
+
+        }
+
+        @Override
+        public void onLocationChanged(Location location) {
+            double longitude = location.getLongitude();
+            double latitude = location.getLatitude();
+            Settings.saveSetting(Settings.LONGITUDE_KEY, String.valueOf(longitude), this);
+            Settings.saveSetting(Settings.LATITUDE_KEY, String.valueOf(latitude), this);
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+            Log.d("Latitude","disable");
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            Log.d("Latitude","enable");
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+            Log.d("Latitude","status");
         }
 
         public void pulseFreqUpdate(){
@@ -184,9 +227,9 @@ import io.realm.RealmResults;
 
             if (characteristic.getValue()[1] >= 0){
                 final RealmPulseReading pulse = new RealmPulseReading();
+                final Calendar calendar = Calendar.getInstance();
                 final SimpleDateFormat simpleDate =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 simpleDate.setTimeZone(TimeZone.getTimeZone("Poland"));
-                final Calendar calendar = Calendar.getInstance();
                 java.util.Date now = calendar.getTime();
                 long x = now.getTime();
                 pulse.setDate(x);
@@ -242,7 +285,17 @@ import io.realm.RealmResults;
 
         public void sendSms(int srednia)
         {
-            smsManager.sendTextMessage(Settings.readString(Settings.NUMBER_KEY, this), null, "average of the 10 last pulse readings is "+String.valueOf(srednia)+" which is not within your limit", null, null);
+            String user = Settings.readString(Settings.USER_LOGIN_KEY, this);
+            longitude = Settings.readString(Settings.LONGITUDE_KEY, this);
+            latitude = Settings.readString(Settings.LATITUDE_KEY, this);
+
+            smsManager.sendTextMessage(Settings.readString(Settings.NUMBER_KEY, this), null,
+                    "User's "+ user
+                        + " average of the 10 last pulse readings is "
+                        + String.valueOf(srednia)
+                        +" which is not within limit. Last known location when measured: "
+                        + "Latitude: " + latitude + "Longitude: " + longitude
+                        , null, null);
         }
 
         void lifeCheck() {

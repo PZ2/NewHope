@@ -37,8 +37,17 @@
 
         <service android:name=".TimeService" />
 
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".SearchActivity"></activity>
+        <activity android:name=".LoginActivity"
+            android:label="Log in"
+            android:parentActivityName=".SettingsActivity"/>
+
+        <activity android:name=".SearchActivity"
+            android:label="Connect"
+            android:parentActivityName=".SettingsActivity"/>
+
+        <meta-data android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
     </application>
 
 </manifest>

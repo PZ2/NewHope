@@ -27,13 +27,16 @@ public class Settings {
     public static final String DATE_KEY = "com.example.het3crab.healthband.date";
     public static final String DATE_KEY1 = "com.example.het3crab.healthband.date1";
     public static final String STEPSGOAL_KEY = "com.example.het3crab.healthband.stepsgoal";
+    public static final String ISLOGGED_KEY = "com.example.het3crab.healthband.isloggedin";
+    public static final String LONGITUDE_KEY = "com.example.het3crab.healthband.longitude";
+    public static final String LATITUDE_KEY = "com.example.het3crab.healthband.latitude";
 
     //miBandAddress = "D9:E3:90:3D:6F:93";
     public static int readInt(String KEY, Context mContext) {
         SharedPreferences prefs = mContext.getSharedPreferences(
                 APP, Context.MODE_PRIVATE);
 
-        return prefs.getInt(KEY, 25);
+        return prefs.getInt(KEY, 10);
     }
 
     public static boolean readBool(String KEY, Context mContext) {
@@ -47,7 +50,7 @@ public class Settings {
         SharedPreferences prefs = mContext.getSharedPreferences(
                 APP, Context.MODE_PRIVATE);
 
-        return prefs.getString(KEY, "DD:B0:AF:B3:09:42");
+        return prefs.getString(KEY, "");
     }
 
     public static void saveSetting(String KEY, int value, Context mContext) {
@@ -71,11 +74,12 @@ public class Settings {
         prefs.edit().putString(KEY, value).apply();
     }
 
+
     public static int readMinPulse(String KEY, Context mContext) {
         SharedPreferences prefs = mContext.getSharedPreferences(
                 APP, Context.MODE_PRIVATE);
 
-        return prefs.getInt(KEY, 35);
+        return prefs.getInt(KEY, 30);
     }
 
     public static int readMaxPulse(String KEY, Context mContext) {
@@ -96,28 +100,28 @@ public class Settings {
         SharedPreferences prefs = mContext.getSharedPreferences(
                 APP, Context.MODE_PRIVATE);
 
-        return prefs.getString(KEY, "10");
+        return prefs.getString(KEY, "0");
     }
 
     public static int readPulseFreq(String KEY, Context mContext) {
         SharedPreferences prefs = mContext.getSharedPreferences(
                 APP, Context.MODE_PRIVATE);
 
-        return prefs.getInt(KEY, 25);
+        return prefs.getInt(KEY, 10);
     }
 
     public static int readStepsGoal(String KEY, Context mContext) {
         SharedPreferences prefs = mContext.getSharedPreferences(
                 APP, Context.MODE_PRIVATE);
 
-        return prefs.getInt(KEY, 10000);
+        return prefs.getInt(KEY, 1000);
     }
 
     public static String readCallories(String KEY, Context mContext) {
         SharedPreferences prefs = mContext.getSharedPreferences(
                 APP, Context.MODE_PRIVATE);
 
-        return prefs.getString(KEY, "300");
+        return prefs.getString(KEY, "0");
 
     }
 

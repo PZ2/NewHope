@@ -19,34 +19,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.content.Intent;
 import android.support.design.widget.BottomNavigationView;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import java.io.BufferedWriter;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import javax.net.ssl.HttpsURLConnection;
 
 public class MainActivity extends AppCompatActivity implements PulseFragment.OnFragmentInteractionListener, BatteryFragment.OnFragmentInteractionListener, StepsFragment.OnFragmentInteractionListener {
 
@@ -63,10 +48,19 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
     int steps;
     int stepGoal;
 
+    CardView isLoggedView;
+
+    private TextView user;
+    private TextView isLoggedInText;
+
+    private boolean isLogged = false;
+
     String batteryDays;
     String batteryH;
     String distance;
     String callories;
+
+    public TextView User;
 
     public BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -147,11 +141,33 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        user = (TextView) findViewById(R.id.userTextView);
+        isLoggedInText = (TextView) findViewById(R.id.textView11);
+
+
+        isLogged = Settings.readBool(Settings.ISLOGGED_KEY,MainActivity.this);
+        if(isLogged == false){
+            isLoggedInText.setText("Not logged in");
+            user.setText("");
+        } else if(isLogged == true) {
+            isLoggedInText.setText("Logged in as:");
+            user.setText(Settings.readString(Settings.USER_LOGIN_KEY, MainActivity.this));
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
+
+        isLoggedView = (CardView) findViewById(R.id.loginCardView);
+        isLoggedView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            }
+        });
 
         pulseFragment.mainActivity = this;
         batteryFragment.mainActivity = this;
@@ -245,6 +261,8 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
                 }
             });}
         }, 5000);
+
+       UpdateGUI();
     }
 
     @Override
@@ -252,6 +270,7 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -276,7 +295,7 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
     ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            Toast.makeText(MainActivity.this, "Service is disconnected", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "Service disconnected", Toast.LENGTH_LONG).show();
             mBounded = false;
             mTimeService = null;
         }
@@ -299,7 +318,23 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        isLogged = Settings.readBool(Settings.ISLOGGED_KEY, this);
+        UpdateGUI();
+    }
+
+    void UpdateGUI(){
+        if(isLogged == false){
+            isLoggedInText.setText("Not logged in");
+            user.setText("");
+        } else if(isLogged == true) {
+            isLoggedInText.setText("Logged in as:");
+            user.setText(Settings.readString(Settings.USER_LOGIN_KEY, MainActivity.this));
+        }
+    }
 
 }
 

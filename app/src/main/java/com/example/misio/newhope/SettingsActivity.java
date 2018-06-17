@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -20,11 +21,12 @@ public class SettingsActivity extends AppCompatActivity {
     private boolean isNotificationsOn = false;
     private int pulseFreqVal;
     private String phoneNumber = "";
-    private String miBandAddress = "D9:E3:90:3D:6F:93";
+    private String miBandAddress = "";
     private int minPulseVal;
     private int maxPulseVal;
     private int stepsGoal;
     int progress;
+
 
     private Button signinButton;
     private Button connectButton;
@@ -96,7 +98,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                pulse_frequency.setText(String.valueOf(i));
+                pulse_frequency.setText(String.valueOf(i+15));
                 progress = Integer.parseInt(pulse_frequency.getText().toString());
             }
 
@@ -142,6 +144,17 @@ public class SettingsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected (MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_feedback:
+
+                Intent i = new Intent(Intent.ACTION_SEND);
+                i.setType("message/rfc822");
+                i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"misiojab@gmail.com"});
+                i.putExtra(Intent.EXTRA_SUBJECT, "Feedback report");
+                i.putExtra(Intent.EXTRA_TEXT   , "");
+                try {
+                    startActivity(Intent.createChooser(i, "Send mail..."));
+                } catch (android.content.ActivityNotFoundException ex) {
+                    Toast.makeText(SettingsActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+                }
 
                 return true;
 

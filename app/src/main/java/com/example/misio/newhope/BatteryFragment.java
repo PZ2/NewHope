@@ -28,6 +28,9 @@ public class BatteryFragment extends Fragment {
     public int batt = 60;
     public int days = 10;
     public int hours = 10;
+    public int p;
+    public TextView estimatedBatteryTime;
+    public TextView batteryText;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -90,7 +93,26 @@ public class BatteryFragment extends Fragment {
         if (batteryRate != null) batteryRate.setText(String.valueOf(batt));
 
         batteryTime = (TextView) getView().findViewById(R.id.batteryTime);
-        if (batteryTime != null) batteryTime.setText(days + " days " + hours + " hours have passed since the last charge");
+        if (batteryTime != null) batteryTime.setText(days + " days " + hours + " hours");
+
+        estimatedBatteryTime = (TextView) getView().findViewById(R.id.estimatedBatteryTime);
+        if (batteryRate != null) estimatedBatteryTime.setText("0");
+
+        batteryText = (TextView) getView().findViewById(R.id.batteryHoursText);
+
+        if( days*24+hours != 0 && 100-batt != 0) {
+            p = ((days * 24 + hours)/(100-batt))*batt;
+            if(p != 0) {
+                estimatedBatteryTime.setText(String.valueOf(p));
+                batteryText.setText("hours");
+            } else {
+                estimatedBatteryTime.setText("Can't calculate yet.");
+                batteryText.setText("");
+            }
+        } else {
+            estimatedBatteryTime.setText("Can't calculate yet.");
+            batteryText.setText("");
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -132,8 +154,24 @@ public class BatteryFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    void UpdateGUI(int battery, String day, String hour){
+    void UpdateGUI(int battery, String day, String hour) {
         if (batteryRate != null) batteryRate.setText(String.valueOf(battery));
         if (batteryTime != null) batteryTime.setText(day + " days " + hour + " hours");
+
+        if (batteryRate != null) {
+            if (days * 24 + hours != 0 && 100 - batt != 0) {
+                p = ((days * 24 + hours)/(100-batt))*batt;
+                if (p != 0) {
+                    estimatedBatteryTime.setText(String.valueOf(p));
+                    batteryText.setText("hours");
+                } else {
+                    estimatedBatteryTime.setText("Can't calculate yet.");
+                    batteryText.setText("");
+                }
+            } else {
+                estimatedBatteryTime.setText("Can't calculate yet.");
+                batteryText.setText("");
+            }
+        }
     }
 }
