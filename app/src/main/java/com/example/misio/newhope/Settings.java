@@ -40,7 +40,7 @@ public class Settings {
         SharedPreferences prefs = mContext.getSharedPreferences(
                 APP, Context.MODE_PRIVATE);
 
-        return prefs.getInt(KEY, 10);
+        return prefs.getInt(KEY, 20);
     }
 
     public static boolean readBool(String KEY, Context mContext) {
@@ -76,80 +76,5 @@ public class Settings {
                 APP, Context.MODE_PRIVATE);
 
         prefs.edit().putString(KEY, value).apply();
-    }
-
-
-    public static int readMinPulse(String KEY, Context mContext) {
-        SharedPreferences prefs = mContext.getSharedPreferences(
-                APP, Context.MODE_PRIVATE);
-
-        return prefs.getInt(KEY, 30);
-    }
-
-    public static int readMaxPulse(String KEY, Context mContext) {
-        SharedPreferences prefs = mContext.getSharedPreferences(
-                APP, Context.MODE_PRIVATE);
-
-        return prefs.getInt(KEY, 180);
-    }
-
-    public static String readPhoneNumber(String KEY, Context mContext) {
-        SharedPreferences prefs = mContext.getSharedPreferences(
-                APP, Context.MODE_PRIVATE);
-
-        return prefs.getString(KEY, "phone number");
-    }
-
-    public static String batteryDate(String KEY, Context mContext) {
-        SharedPreferences prefs = mContext.getSharedPreferences(
-                APP, Context.MODE_PRIVATE);
-
-        return prefs.getString(KEY, "0");
-    }
-
-    public static int readPulseFreq(String KEY, Context mContext) {
-        SharedPreferences prefs = mContext.getSharedPreferences(
-                APP, Context.MODE_PRIVATE);
-
-        return prefs.getInt(KEY, 10);
-    }
-
-    public static int readStepsGoal(String KEY, Context mContext) {
-        SharedPreferences prefs = mContext.getSharedPreferences(
-                APP, Context.MODE_PRIVATE);
-
-        return prefs.getInt(KEY, 1000);
-    }
-
-    public static String readCallories(String KEY, Context mContext) {
-        SharedPreferences prefs = mContext.getSharedPreferences(
-                APP, Context.MODE_PRIVATE);
-
-        return prefs.getString(KEY, "0");
-
-    }
-
-    public static String readDistance(String KEY, Context mContext) {
-        SharedPreferences prefs = mContext.getSharedPreferences(
-                APP, Context.MODE_PRIVATE);
-
-        return prefs.getString(KEY, "10.00");
-
-    }
-
-    public static int readDate(String KEY, Context mContext) {
-        SharedPreferences prefs = mContext.getSharedPreferences(
-                APP, Context.MODE_PRIVATE);
-
-        return prefs.getInt(KEY, 32);
-
-    }
-
-    public static int readDate1(String KEY, Context mContext) {
-        SharedPreferences prefs = mContext.getSharedPreferences(
-                APP, Context.MODE_PRIVATE);
-
-        return prefs.getInt(KEY, 32);
-
     }
 }

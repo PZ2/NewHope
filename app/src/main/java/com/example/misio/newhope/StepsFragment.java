@@ -97,7 +97,7 @@ public class StepsFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
-        step_goal = Settings.readStepsGoal(Settings.STEPSGOAL_KEY, getContext());
+        step_goal = Settings.readInt(Settings.STEPSGOAL_KEY, getContext());
 
         progressBar = (ProgressBar) getView().findViewById(R.id.progressBar);
 

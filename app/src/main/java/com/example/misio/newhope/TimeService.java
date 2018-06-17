@@ -252,38 +252,38 @@ import io.realm.RealmResults;
                 lifeCheck();
 
                 RequestQueue queue = Volley.newRequestQueue(this);
-                final String url = "http://healthband-app.herokuapp.com/HBPulse/add-pulse/";
-                StringRequest postRequest = new StringRequest(Request.Method.POST, url,
-                        new Response.Listener<String>()
-                        {
-                            @Override
-                            public void onResponse(String response) {
-                                // response
-                                Log.d("Response", response);
-                            }
-                        },
-                        new Response.ErrorListener()
-                        {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                // error
-                                Log.d("Error.Response", "error");
-                            }
-                        }
-                ) {
-                    @Override
-                    protected Map<String, String> getParams()
-                    {
-                        Map<String, String>  params = new HashMap<String, String>();
-                        params.put("pulsevalue", Integer.toString((int)(characteristic.getValue()[1])));
-                        params.put("pulsedate", simpleDate.format(calendar.getTime()));
-                        params.put("username", Settings.readString(Settings.USER_LOGIN_KEY, TimeService.this));
-                        params.put("password", Settings.readString(Settings.USER_PASS_KEY, TimeService.this));
 
-                        return params;
-                    }
-                };
-                queue.add(postRequest);
+                if(Settings.readBool(Settings.ISLOGGED_KEY, this)) {
+                    final String url = "http://healthband-app.herokuapp.com/HBPulse/add-pulse/";
+                    StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    // response
+                                    Log.d("Response", response);
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    // error
+                                    Log.d("Error.Response", "error");
+                                }
+                            }
+                    ) {
+                        @Override
+                        protected Map<String, String> getParams() {
+                            Map<String, String> params = new HashMap<String, String>();
+                            params.put("pulsevalue", Integer.toString((int) (characteristic.getValue()[1])));
+                            params.put("pulsedate", simpleDate.format(calendar.getTime()));
+                            params.put("username", Settings.readString(Settings.USER_LOGIN_KEY, TimeService.this));
+                            params.put("password", Settings.readString(Settings.USER_PASS_KEY, TimeService.this));
+
+                            return params;
+                        }
+                    };
+                    queue.add(postRequest);
+                }
 
                 Settings.saveSetting(Settings.READ_PULSE_KEY, true, this);
             }
@@ -329,7 +329,7 @@ import io.realm.RealmResults;
                         }
                         average /= 10;
                         Log.d("średnia", String.valueOf(average));
-                        if (average > Settings.readMaxPulse(Settings.MAXPULSE_KEY, TimeService.this) || average < Settings.readMinPulse(Settings.MINPULSE_KEY, TimeService.this)) {
+                        if (average > Settings.readInt(Settings.MAXPULSE_KEY, TimeService.this) || average < Settings.readInt(Settings.MINPULSE_KEY, TimeService.this)) {
 
                             if (pulses2.get(pulses2.size() - 1).getValue() == 0){
                                 odczytPulsu();

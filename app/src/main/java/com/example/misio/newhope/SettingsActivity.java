@@ -71,14 +71,14 @@ public class SettingsActivity extends AppCompatActivity {
         steps_goal = findViewById(R.id.steps_goal);
         pulse_frequency = findViewById(R.id.pulse_frequency);
 
-        steps_goal.setText(String.valueOf(Settings.readStepsGoal(Settings.STEPSGOAL_KEY, this)));
+        steps_goal.setText(String.valueOf(Settings.readInt(Settings.STEPSGOAL_KEY, this)));
         pulse_frequency.setText(String.valueOf(Settings.readInt(Settings.PULSE_FREQ_KEY, this)));
         alerts.setChecked(Settings.readBool(Settings.ALERTS_KEY, this));
         notifications.setChecked(Settings.readBool(Settings.NOTIFICATIONS_KEY, this));
-        number.setText(Settings.readPhoneNumber(Settings.NUMBER_KEY, this));
+        number.setText(Settings.readString(Settings.NUMBER_KEY, this));
         miBand.setText(Settings.readString(Settings.ADDRESS_KEY, this));
-        minPulse.setText(String.valueOf(Settings.readMinPulse(Settings.MINPULSE_KEY,this)));
-        maxPulse.setText(String.valueOf(Settings.readMaxPulse(Settings.MAXPULSE_KEY,this)));
+        minPulse.setText(String.valueOf(Settings.readInt(Settings.MINPULSE_KEY,this)));
+        maxPulse.setText(String.valueOf(Settings.readInt(Settings.MAXPULSE_KEY,this)));
 
         Toolbar appSettingsToolbar =
                 (Toolbar) findViewById(R.id.settings_toolbar);
@@ -184,10 +184,10 @@ public class SettingsActivity extends AppCompatActivity {
         pulse_frequency.setText(String.valueOf(Settings.readInt(Settings.PULSE_FREQ_KEY, this)));
         alerts.setChecked(Settings.readBool(Settings.ALERTS_KEY, this));
         notifications.setChecked(Settings.readBool(Settings.NOTIFICATIONS_KEY, this));
-        number.setText(Settings.readPhoneNumber(Settings.NUMBER_KEY, this));
+        number.setText(Settings.readString(Settings.NUMBER_KEY, this));
         miBand.setText(Settings.readString(Settings.ADDRESS_KEY, this));
-        minPulse.setText(String.valueOf(Settings.readMinPulse(Settings.MINPULSE_KEY,this)));
-        maxPulse.setText(String.valueOf(Settings.readMaxPulse(Settings.MAXPULSE_KEY,this)));
+        minPulse.setText(String.valueOf(Settings.readInt(Settings.MINPULSE_KEY,this)));
+        maxPulse.setText(String.valueOf(Settings.readInt(Settings.MAXPULSE_KEY,this)));
     }
 
 }

@@ -236,11 +236,11 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
                 public void run() {
                     battery = Settings.readInt(Settings.BATTERY_KEY, MainActivity.this);
                     steps = Settings.readInt(Settings.STEPS_KEY, MainActivity.this);
-                    batteryDays = Settings.batteryDate(Settings.BATTERYDAYS_KEY, MainActivity.this);
-                    batteryH = Settings.batteryDate(Settings.BATTERYHOURS_KEY, MainActivity.this);
-                    callories = Settings.readCallories(Settings.CALLORIES_KEY, MainActivity.this);
-                    distance = Settings.readDistance(Settings.DISTANCE_KEY, MainActivity.this);
-                    stepGoal = Settings.readStepsGoal(Settings.STEPSGOAL_KEY, MainActivity.this);
+                    batteryDays = Settings.readString(Settings.BATTERYDAYS_KEY, MainActivity.this);
+                    batteryH = Settings.readString(Settings.BATTERYHOURS_KEY, MainActivity.this);
+                    callories = Settings.readString(Settings.CALLORIES_KEY, MainActivity.this);
+                    distance = Settings.readString(Settings.DISTANCE_KEY, MainActivity.this);
+                    stepGoal = Settings.readInt(Settings.STEPSGOAL_KEY, MainActivity.this);
 
                     if(Settings.readBool(Settings.READ_PULSE_KEY, MainActivity.this)) pulseFragment.UpdateGUI();
                     if(Settings.readBool(Settings.READ_BATT_KEY, MainActivity.this)) batteryFragment.UpdateGUI(battery, batteryDays, batteryH);
@@ -250,8 +250,8 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
                     int currentTime1 = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
 
 
-                    int previousTime = Settings.readDate(Settings.DATE_KEY, MainActivity.this);
-                    int previousTime1 = Settings.readDate(Settings.DATE_KEY1, MainActivity.this);
+                    int previousTime = Settings.readInt(Settings.DATE_KEY, MainActivity.this);
+                    int previousTime1 = Settings.readInt(Settings.DATE_KEY1, MainActivity.this);
 
                     if (Settings.readBool(Settings.READ_STEPS_KEY, MainActivity.this) && Settings.readBool(Settings.NOTIFICATIONS_KEY, MainActivity.this) && steps >= stepGoal && currentTime != previousTime) {
                         Settings.saveSetting(Settings.DATE_KEY, currentTime, MainActivity.this);
