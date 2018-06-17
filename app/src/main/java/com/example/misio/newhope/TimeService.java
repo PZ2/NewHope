@@ -3,6 +3,7 @@ package com.example.misio.newhope;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.app.TimePickerDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -60,6 +61,7 @@ import io.realm.RealmResults;
         protected LocationListener locationListener;
         protected Context context;
 
+        private long time = 0;
 
         String lat;
         String provider;
@@ -328,14 +330,21 @@ import io.realm.RealmResults;
                         average /= 10;
                         Log.d("średnia", String.valueOf(average));
                         if (average > Settings.readMaxPulse(Settings.MAXPULSE_KEY, TimeService.this) || average < Settings.readMinPulse(Settings.MINPULSE_KEY, TimeService.this)) {
-                            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                            // Vibrate for 500 milliseconds
-                            v.vibrate(500);
 
                             if (pulses2.get(pulses2.size() - 1).getValue() == 0){
                                 odczytPulsu();
                             }
-                            sendSms(average);
+
+                            if(Settings.readBool(Settings.ALERTS_KEY, TimeService.this)){
+                                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                // Vibrate for 500 milliseconds
+                                v.vibrate(500);
+                            }
+
+                            if(time + 60000 > System.currentTimeMillis()) {
+                                time = System.currentTimeMillis();
+                                sendSms(average);
+                            }
                         }
 
                     }

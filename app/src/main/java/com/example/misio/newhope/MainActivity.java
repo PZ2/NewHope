@@ -253,12 +253,12 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
                     int previousTime = Settings.readDate(Settings.DATE_KEY, MainActivity.this);
                     int previousTime1 = Settings.readDate(Settings.DATE_KEY1, MainActivity.this);
 
-                    if (Settings.readBool(Settings.READ_STEPS_KEY, MainActivity.this) && steps >= stepGoal && currentTime != previousTime) {
+                    if (Settings.readBool(Settings.READ_STEPS_KEY, MainActivity.this) && Settings.readBool(Settings.NOTIFICATIONS_KEY, MainActivity.this) && steps >= stepGoal && currentTime != previousTime) {
                         Settings.saveSetting(Settings.DATE_KEY, currentTime, MainActivity.this);
                         mNotifications.showNotification("Daily Goal Achieved", "You have reached " + stepGoal + " steps today! Congratulations!", "Daily Goal", MainActivity.class);
                     }
 
-                    if (Settings.readBool(Settings.READ_BATT_KEY, MainActivity.this) && battery <= 15 && currentTime1 != previousTime1) {
+                    if (Settings.readBool(Settings.READ_BATT_KEY, MainActivity.this) && Settings.readBool(Settings.NOTIFICATIONS_KEY, MainActivity.this) && battery <= 15 && currentTime1 != previousTime1) {
                         Settings.saveSetting(Settings.DATE_KEY1, currentTime1, MainActivity.this);
                         mNotifications.showNotification("MiBand's battery is low", "Currently " + battery + " %", "Battery Low", MainActivity.class);
                     }
