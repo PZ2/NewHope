@@ -141,6 +141,21 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if(!Settings.readBool(Settings.INIT_KEY, this)){
+            Settings.saveSetting(Settings.PULSE_FREQ_KEY, 30, this);
+            Settings.saveSetting(Settings.ALERTS_KEY, false, this);
+            Settings.saveSetting(Settings.NOTIFICATIONS_KEY, false, this);
+            Settings.saveSetting(Settings.NUMBER_KEY, "", this);
+            Settings.saveSetting(Settings.ADDRESS_KEY, "DD:B0:AF:B3:09:42", this);
+            Settings.saveSetting(Settings.MINPULSE_KEY, 35, this);
+            Settings.saveSetting(Settings.MAXPULSE_KEY, 180,this);
+            Settings.saveSetting(Settings.STEPSGOAL_KEY, 10000, this);
+            Settings.saveSetting(Settings.INIT_KEY, true, this);
+        }
+
+        Settings.saveSetting(Settings.READ_PULSE_KEY, false, this);
+        Settings.saveSetting(Settings.READ_STEPS_KEY, false, this);
+        Settings.saveSetting(Settings.READ_BATT_KEY, false, this);
 
         user = (TextView) findViewById(R.id.userTextView);
         isLoggedInText = (TextView) findViewById(R.id.textView11);
@@ -226,9 +241,10 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
                     callories = Settings.readCallories(Settings.CALLORIES_KEY, MainActivity.this);
                     distance = Settings.readDistance(Settings.DISTANCE_KEY, MainActivity.this);
                     stepGoal = Settings.readStepsGoal(Settings.STEPSGOAL_KEY, MainActivity.this);
-                    pulseFragment.UpdateGUI();
-                    batteryFragment.UpdateGUI(battery, batteryDays, batteryH);
-                    stepsFragment.UpdateGUI(steps, callories, distance, stepGoal);
+
+                    if(Settings.readBool(Settings.READ_PULSE_KEY, MainActivity.this)) pulseFragment.UpdateGUI();
+                    if(Settings.readBool(Settings.READ_BATT_KEY, MainActivity.this)) batteryFragment.UpdateGUI(battery, batteryDays, batteryH);
+                    if(Settings.readBool(Settings.READ_STEPS_KEY, MainActivity.this)) stepsFragment.UpdateGUI(steps, callories, distance, stepGoal);
 
                     int currentTime = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
                     int currentTime1 = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
@@ -237,12 +253,12 @@ public class MainActivity extends AppCompatActivity implements PulseFragment.OnF
                     int previousTime = Settings.readDate(Settings.DATE_KEY, MainActivity.this);
                     int previousTime1 = Settings.readDate(Settings.DATE_KEY1, MainActivity.this);
 
-                    if (steps >= stepGoal && currentTime != previousTime) {
+                    if (Settings.readBool(Settings.READ_STEPS_KEY, MainActivity.this) && steps >= stepGoal && currentTime != previousTime) {
                         Settings.saveSetting(Settings.DATE_KEY, currentTime, MainActivity.this);
                         mNotifications.showNotification("Daily Goal Achieved", "You have reached " + stepGoal + " steps today! Congratulations!", "Daily Goal", MainActivity.class);
                     }
 
-                    if (battery <= 15 && currentTime1 != previousTime1) {
+                    if (Settings.readBool(Settings.READ_BATT_KEY, MainActivity.this) && battery <= 15 && currentTime1 != previousTime1) {
                         Settings.saveSetting(Settings.DATE_KEY1, currentTime1, MainActivity.this);
                         mNotifications.showNotification("MiBand's battery is low", "Currently " + battery + " %", "Battery Low", MainActivity.class);
                     }

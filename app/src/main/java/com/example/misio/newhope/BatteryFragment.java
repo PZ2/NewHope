@@ -90,29 +90,15 @@ public class BatteryFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
         batteryRate = (TextView) getView().findViewById(R.id.batteryRate);
-        if (batteryRate != null) batteryRate.setText(String.valueOf(batt));
 
         batteryTime = (TextView) getView().findViewById(R.id.batteryTime);
-        if (batteryTime != null) batteryTime.setText(days + " days " + hours + " hours");
 
         estimatedBatteryTime = (TextView) getView().findViewById(R.id.estimatedBatteryTime);
-        if (batteryRate != null) estimatedBatteryTime.setText("0");
 
         batteryText = (TextView) getView().findViewById(R.id.batteryHoursText);
 
-        if( days*24+hours != 0 && 100-batt != 0) {
-            p = ((days * 24 + hours)/(100-batt))*batt;
-            if(p != 0) {
-                estimatedBatteryTime.setText(String.valueOf(p));
-                batteryText.setText("hours");
-            } else {
-                estimatedBatteryTime.setText("Can't calculate yet.");
-                batteryText.setText("");
-            }
-        } else {
             estimatedBatteryTime.setText("Can't calculate yet.");
             batteryText.setText("");
-        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event

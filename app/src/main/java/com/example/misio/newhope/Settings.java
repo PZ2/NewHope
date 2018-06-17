@@ -30,6 +30,10 @@ public class Settings {
     public static final String ISLOGGED_KEY = "com.example.het3crab.healthband.isloggedin";
     public static final String LONGITUDE_KEY = "com.example.het3crab.healthband.longitude";
     public static final String LATITUDE_KEY = "com.example.het3crab.healthband.latitude";
+    public static final String READ_BATT_KEY = "com.example.het3crab.healthband.read_batt";
+    public static final String READ_STEPS_KEY = "com.example.het3crab.healthband.read_steps";
+    public static final String READ_PULSE_KEY = "com.example.het3crab.healthband.read_pulse";
+    public static final String INIT_KEY = "com.example.het3crab.healthband.init";
 
     //miBandAddress = "D9:E3:90:3D:6F:93";
     public static int readInt(String KEY, Context mContext) {

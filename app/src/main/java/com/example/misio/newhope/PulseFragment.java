@@ -105,8 +105,6 @@ public class PulseFragment extends Fragment{
     public void onViewCreated(View view, Bundle savedInstanceState){
         heartRateView = (TextView) getView().findViewById(R.id.heartRate);
 
-        setHeartRate(heartRate);
-
         fap = getView().findViewById(R.id.fap);
         fap.setOnClickListener(new View.OnClickListener() {
         @Override

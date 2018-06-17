@@ -100,19 +100,12 @@ public class StepsFragment extends Fragment {
         step_goal = Settings.readStepsGoal(Settings.STEPSGOAL_KEY, getContext());
 
         progressBar = (ProgressBar) getView().findViewById(R.id.progressBar);
-        if (progressBar != null){
-            progressBar.setMax(step_goal);
-            progressBar.setProgress(step);
-        }
 
         calloriesView = (TextView) getView().findViewById(R.id.calloriesView);
-        if (calloriesView != null) calloriesView.setText(call);
 
         distanceView = (TextView) getView().findViewById(R.id.distanceView);
-        if (distanceView != null) distanceView.setText(dist);
 
         stepsRate = (TextView) getView().findViewById(R.id.stepsRate);
-        if (stepsRate != null) stepsRate.setText(String.valueOf(step));
     }
 
 

@@ -188,7 +188,7 @@ import io.realm.RealmResults;
                 Settings.saveSetting(Settings.BATTERYDAYS_KEY, String.valueOf(days), this);
                 Settings.saveSetting(Settings.BATTERYHOURS_KEY, String.valueOf(h), this);
 
-
+                Settings.saveSetting(Settings.READ_BATT_KEY, true, this);
 
             }
             else if (characteristic.getUuid().toString().equals(Consts.UUID_CHARACTERISTIC_7_REALTIME_STEPS.toString())){
@@ -212,6 +212,8 @@ import io.realm.RealmResults;
 
                 Log.d("odczyt dystansu", " - odczyt dystansu: " + km);
                 Settings.saveSetting(Settings.DISTANCE_KEY, String.format("%.2f", km), this);
+
+                Settings.saveSetting(Settings.READ_STEPS_KEY, true, this);
             }
         }
 
@@ -280,6 +282,8 @@ import io.realm.RealmResults;
                     }
                 };
                 queue.add(postRequest);
+
+                Settings.saveSetting(Settings.READ_PULSE_KEY, true, this);
             }
         }
 
